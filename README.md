@@ -61,10 +61,23 @@ Check out the [example app](https://github.com/aheze/SwipeActions/archive/refs/h
 
 ### Customization
 
-SwipeActions supports over 20 modifiers for customization.
+SwipeActions supports over 20 modifiers for customization. To use them, simply attach the modifier to `SwipeAction`/`SwipeView`.
 
 ```swift
-// MARK: - For `SwipeAction` (the side views)
+SwipeView {
+    Text("Hello")
+} leadingActions: { _ in
+} trailingActions: { _ in
+    SwipeAction("World") {
+        print("Tapped!")
+    }
+    .swipeActionEdgeStyling() /// Modifiers for `SwipeAction` go here.
+}
+.swipeToTriggerTrailingEdge(true) /// Modifiers for `SwipeView` go here.
+```
+
+```swift
+// MARK: - Available modifiers for `SwipeAction` (the side views)
 
 /**  
   For leading actions:
@@ -88,7 +101,7 @@ func swipeActionChangeLabelVisibilityOnly(_ value: Bool)
 ```
 
 ```swift
-// MARK: - For `SwipeView` (the main view)
+// MARK: - Available modifiers for `SwipeView` (the main view)
 
 /// Enable triggering the leading edge via a drag.
 /// You must also call `swipeActionEdgeStyling()` on the leftmost edge `SwipeAction`.
@@ -188,4 +201,5 @@ SOFTWARE.
 ---
 
 https://user-images.githubusercontent.com/49819455/231671743-baca394e-fc74-4062-83eb-2024b8add924.mp4
+
 
