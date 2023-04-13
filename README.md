@@ -2,10 +2,13 @@
 
 Add customizable swipe actions to any view.
 
-- Enable swipe actions to any view, not just Lists.
+- Enable swipe actions on any view, not just Lists.
+- Customize literally everything — corner radius, color, etc...
+- Supports drag-to-delete and advanced gesture handling.
+- Fine-tune animations and styling to your taste.
+- Programmatically show/hide swipe actions.
 - Made with 100% SwiftUI. Supports iOS 14+.
 - Lightweight, no dependencies. One file.
-- Highly customizable.
 
 
 ![General](Assets/General.png) | ![Basics](Assets/Basics.png) | ![Customization](Assets/Customization.png)
@@ -13,12 +16,10 @@ Add customizable swipe actions to any view.
 ![Styles](Assets/Styles.png) | ![Animations](Assets/Animations.png) | ![Advanced](Assets/Advanced.png)
 
 
-https://user-images.githubusercontent.com/49819455/231671743-baca394e-fc74-4062-83eb-2024b8add924.mp4
-
 
 ### Installation
 
-SwipeActions is available via the [Swift Package Manager](https://developer.apple.com/documentation/swift_packages/adding_package_dependencies_to_your_app). Requires iOS 14+.
+SwipeActions is available via the [Swift Package Manager](https://developer.apple.com/documentation/swift_packages/adding_package_dependencies_to_your_app). Alternatively, because SwipeActions is contained within a single file, drag [`SwipeActions.swift`](https://github.com/aheze/SwipeActions/blob/main/Sources/SwipeActions.swift) into your project. Requires iOS 14+.
 
 ```
 https://github.com/aheze/SwipeActions
@@ -56,3 +57,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
+---
+
+https://user-images.githubusercontent.com/49819455/231671743-baca394e-fc74-4062-83eb-2024b8add924.mp4
