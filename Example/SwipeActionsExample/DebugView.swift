@@ -5,7 +5,7 @@
 //  Created by A. Zheng (github.com/aheze) on 4/12/23.
 //  Copyright © 2023 A. Zheng. All rights reserved.
 //
-    
+
 import SwiftUI
 import SwipeActions
 
@@ -36,19 +36,18 @@ struct RowSwipeView: View {
         } leadingActions: { _ in
         } trailingActions: { context in
             SwipeAction("Hello!") {}
-//                .onChange(of: context.currentlyDragging) { newValue in
-//                    if newValue {
-//                        selectedTag = tag
-//                    }
-//                }
+                .onChange(of: context.currentlyDragging) { newValue in
+                    if newValue {
+                        selectedTag = tag
+                    }
+                }
                 .onChange(of: context.state.wrappedValue) { newValue in
-                    print("Changed! \(newValue)")
-                    if newValue == .closed {
+                    if newValue == .closed, selectedTag == tag {
                         selectedTag = nil
                     }
                 }
                 .onChange(of: selectedTag) { newValue in
-                    if selectedTag != tag {
+                    if selectedTag != tag, context.state.wrappedValue != .closed {
                         context.state.wrappedValue = .closed
                     }
                 }
@@ -56,7 +55,7 @@ struct RowSwipeView: View {
     }
 }
 
-//struct DebugView: View {
+// struct DebugView: View {
 //    @State var showingCustomizationClear = true
 //    @State var hue = false
 //    @State var bright = false
@@ -196,5 +195,4 @@ struct RowSwipeView: View {
 //        .swipeToTriggerTrailingEdge(true)
 //        .swipeActionWidth(120)
 //    }
-//}
-
+// }

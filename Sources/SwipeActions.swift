@@ -463,9 +463,8 @@ extension SwipeView {
                 state: stateBinding,
                 numberOfActions: numberOfActions.wrappedValue,
                 side: side,
-                opacity: opacity
-//                ,
-//                currentlyDragging: false
+                opacity: opacity,
+                currentlyDragging: currentlyDragging
             )
 
             actions(context) /// Call the `actions` view and pass in context.
