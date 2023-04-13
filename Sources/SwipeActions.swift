@@ -99,7 +99,7 @@ public struct SwipeContext {
     public var opacity = Double(0)
     
     /// If the user is swiping or not.
-//    public var currentlyDragging = false
+    public var currentlyDragging = false
 }
 
 /// The style to reveal actions.
