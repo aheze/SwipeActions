@@ -137,9 +137,6 @@ struct ContentView: View {
 
                                 Text("[View on GitHub](https://github.com/aheze/SwipeActions)")
                                     .font(.system(.body, design: .monospaced).weight(.semibold))
-
-                                Text("Hint: *everything* here\nis swipeable!")
-                                    .font(.system(.body, design: .monospaced))
                             }
                             .multilineTextAlignment(.center)
                             .accentColor(.primary)
