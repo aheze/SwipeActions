@@ -32,24 +32,48 @@ struct ContentView: View {
     @State var showingDebug = false
 
     var body: some View {
-        VStack {
-            if #available(iOS 16.0, *) {
-                NavigationStack {
-                    content
-                        .background(secondaryBackgroundColor)
-                        .navigationTitle("SwipeActions")
+        SwipeView {
+            Container(
+                title: "Multiple + Swipe to Trigger",
+                details:
+                #"SwipeAction("1") {}"#,
+                #"SwipeAction("Dismiss") {}"#,
+                ".swipeActionEdgeStyling()",
+                ".swipeToTriggerTrailingEdge(true)"
+            )
+        } trailingActions: { _ in
+            SwipeAction("1") {}
+            SwipeAction("Dismiss") {
+                withAnimation(.spring()) {
+                    showingMultiplePlusSwipeToTrigger = false
                 }
-            } else {
-                NavigationView {
-                    content
-                        .background(secondaryBackgroundColor)
-                        .navigationTitle("SwipeActions")
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    withAnimation(.spring()) {
+                        showingMultiplePlusSwipeToTrigger = true
+                    }
                 }
             }
+            .allowSwipeToTrigger()
         }
-        .sheet(isPresented: $showingDebug) {
-            DebugView()
-        }
+//        VStack {
+//            if #available(iOS 16.0, *) {
+//                NavigationStack {
+//                    content
+//                        .background(secondaryBackgroundColor)
+//                        .navigationTitle("SwipeActions")
+//                }
+//            } else {
+//                NavigationView {
+//                    content
+//                        .background(secondaryBackgroundColor)
+//                        .navigationTitle("SwipeActions")
+//                }
+//            }
+//        }
+//        .sheet(isPresented: $showingDebug) {
+//            DebugView()
+//        }
     }
 
     var content: some View {
@@ -155,7 +179,6 @@ struct ContentView: View {
                     .allowSwipeToTrigger()
                     .font(.largeTitle)
                 }
-                .swipeToTriggerTrailingEdge(true)
             }
             .padding(.top, 8)
             .padding(.horizontal, 20)
@@ -254,7 +277,6 @@ struct DemoSection<Content: View>: View {
                 .allowSwipeToTrigger()
             }
             .swipeActionWidth(120)
-            .swipeToTriggerTrailingEdge(true)
 
             if expanded.wrappedValue {
                 content

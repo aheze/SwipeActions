@@ -106,7 +106,6 @@ extension ContentView {
                 .font(.title3.weight(.medium))
                 .foregroundColor(.white)
             }
-            .swipeToTriggerTrailingEdge(true)
             .swipeActionCornerRadius(0)
             .swipeSpacing(0)
             .swipeActionsMaskCornerRadius(0)

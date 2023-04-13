@@ -49,7 +49,6 @@ extension ContentView {
                 }
                 .allowSwipeToTrigger()
             }
-            .swipeToTriggerTrailingEdge(true)
         }
 
         if showingMultiplePlusSwipeToTrigger {
@@ -77,7 +76,6 @@ extension ContentView {
                 }
                 .allowSwipeToTrigger()
             }
-            .swipeToTriggerTrailingEdge(true)
         }
     }
 }

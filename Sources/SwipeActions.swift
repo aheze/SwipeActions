@@ -226,8 +226,8 @@ public struct SwipeViewGroup<Content: View>: View {
 public struct SwipeAction<Label: View, Background: View>: View {
     // MARK: - Properties
 
-    /// Set to true to enable drag-to-trigger on the edge action.
-    public var isSwipeEdge = false
+    /// Set to true to enable drag-to-trigger on the edge action. If `nil`, this is not the edge action.
+    public var allowSwipeToTrigger: Bool?
 
     /// Constrain the action's content size (helpful for text).
     public var labelFixedSize = true
@@ -269,7 +269,7 @@ public struct SwipeAction<Label: View, Background: View>: View {
     public var body: some View {
         /// Usually `.center`, but if there's only one action and it's triggered, move it closer to the center.
         let labelAlignment: Alignment = {
-            guard isSwipeEdge else { return .center }
+            guard let allowSwipeToTrigger, allowSwipeToTrigger else { return .center }
             if swipeContext.numberOfActions == 1 {
                 if swipeContext.state.wrappedValue == .triggering || swipeContext.state.wrappedValue == .triggered {
                     return swipeContext.side.edgeTriggerAlignment
@@ -302,7 +302,7 @@ public struct SwipeAction<Label: View, Background: View>: View {
         } perform: {}
         .buttonStyle(SwipeActionButtonStyle())
         .onChange(of: swipeContext.state.wrappedValue) { state in /// Read changes in state.
-            guard isSwipeEdge else { return }
+            guard let allowSwipeToTrigger, allowSwipeToTrigger else { return }
 
             if let state {
                 if state == .triggering || state == .triggered {
@@ -318,7 +318,7 @@ public struct SwipeAction<Label: View, Background: View>: View {
                 highlighted = false
             }
         }
-        .preference(key: AllowSwipeToTriggerKey.self, value: isSwipeEdge)
+        .preference(key: AllowSwipeToTriggerKey.self, value: allowSwipeToTrigger)
     }
 }
 
@@ -408,8 +408,11 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
                 leadingActions(context)
                     .environment(\.swipeContext, context)
                     .onPreferenceChange(AllowSwipeToTriggerKey.self) { allow in
-                        print("allow leading? \(allow)")
-                        swipeToTriggerLeadingEdge = allow
+
+                        /// Unwrap the value first (if it's not the edge action, `allow` is `nil`).
+                        if let allow {
+                            swipeToTriggerLeadingEdge = allow
+                        }
                     }
             },
             alignment: .leading
@@ -419,8 +422,9 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
                 trailingActions(context)
                     .environment(\.swipeContext, context)
                     .onPreferenceChange(AllowSwipeToTriggerKey.self) { allow in
-                        print("allow trailing? \(allow)")
-                        swipeToTriggerTrailingEdge = allow
+                        if let allow {
+                            swipeToTriggerTrailingEdge = allow
+                        }
                     }
             },
             alignment: .trailing
@@ -1064,9 +1068,9 @@ public extension SwipeAction {
                  .allowSwipeToTrigger()
          }
      */
-    func allowSwipeToTrigger() -> SwipeAction {
+    func allowSwipeToTrigger(_ value: Bool = true) -> some View {
         var view = self
-        view.isSwipeEdge = true
+        view.allowSwipeToTrigger = value
         return view
     }
 
@@ -1093,20 +1097,6 @@ public extension SwipeAction {
 }
 
 public extension SwipeView {
-    /// Enable triggering the leading edge via a drag.
-    func swipeToTriggerLeadingEdge(_ value: Bool) -> SwipeView {
-        var view = self
-//        view.swipeToTriggerLeadingEdge = value
-        return view
-    }
-
-    /// Enable triggering the trailing edge via a drag.
-    func swipeToTriggerTrailingEdge(_ value: Bool) -> SwipeView {
-        var view = self
-//        view.swipeToTriggerTrailingEdge = value
-        return view
-    }
-
     /// The minimum distance needed to drag to start the gesture. Should be more than 0 for best compatibility with other gestures/buttons.
     func swipeMinimumDistance(_ value: Double) -> SwipeView {
         var view = self
@@ -1398,6 +1388,6 @@ struct ContentSizeReaderPreferenceKey: PreferenceKey {
 }
 
 struct AllowSwipeToTriggerKey: PreferenceKey {
-    static var defaultValue: Bool = false
-    static func reduce(value: inout Bool, nextValue: () -> Bool) { value = nextValue() }
+    static var defaultValue: Bool? = nil
+    static func reduce(value: inout Bool?, nextValue: () -> Bool?) { value = nextValue() }
 }

@@ -58,7 +58,6 @@ extension ContentView {
             SwipeAction("Trailing") {}
                 .allowSwipeToTrigger()
         }
-        .swipeToTriggerTrailingEdge(true)
         .swipeReadyToExpandPadding(0)
         .swipeReadyToTriggerPadding(0)
         .swipeMinimumPointToTrigger(0)

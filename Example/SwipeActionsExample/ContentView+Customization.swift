@@ -43,7 +43,6 @@ extension ContentView {
                 }
                 .allowSwipeToTrigger()
             }
-            .swipeToTriggerTrailingEdge(true)
         }
 
         SwipeView {
