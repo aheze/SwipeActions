@@ -39,7 +39,6 @@ struct ContentView: View {
                 .padding(.vertical, 32)
                 .background(Color.blue.opacity(0.1))
                 .cornerRadius(32)
-        } leadingActions: { _ in
         } trailingActions: { _ in
             SwipeAction("World") {
                 print("Tapped!")

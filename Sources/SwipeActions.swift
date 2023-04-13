@@ -207,9 +207,11 @@ public extension EnvironmentValues {
 /**
  To only allow one swipe view open at a time, use this view.
 
- SwipeViewGroup {
-
- }
+     SwipeViewGroup {
+         SwipeView {} /// Only one will be shown.
+         SwipeView {}
+         SwipeView {}
+     }
 
  */
 public struct SwipeViewGroup<Content: View>: View {
