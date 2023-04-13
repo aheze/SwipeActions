@@ -152,7 +152,7 @@ struct ContentView: View {
                             showingAlternateFooter.toggle()
                         }
                     }
-                    .swipeActionEdgeStyling()
+                    .allowSwipeToTrigger()
                     .font(.largeTitle)
                 }
                 .swipeToTriggerTrailingEdge(true)
@@ -251,7 +251,7 @@ struct DemoSection<Content: View>: View {
                     VisualEffectView(.systemChromeMaterial)
                         .environment(\.colorScheme, .dark)
                 }
-                .swipeActionEdgeStyling()
+                .allowSwipeToTrigger()
             }
             .swipeActionWidth(120)
             .swipeToTriggerTrailingEdge(true)

@@ -1034,9 +1034,24 @@ public extension SwipeView where LeadingActions == EmptyView, TrailingActions ==
 // MARK: - Convenience modifiers
 
 public extension SwipeAction {
-    /// Apply this to the rightmost edge action to enable drag-to-trigger.
-    /// You must also call `swipeToTriggerTrailingEdge(true)` on the `SwipeView`.
-    func swipeActionEdgeStyling() -> SwipeAction {
+    /**
+     Apply this to the edge action to enable drag-to-trigger.
+
+         SwipeView {
+             Text("Swipe")
+         } leadingActions: { _ in
+             SwipeAction("1") {}
+                 .allowSwipeToTrigger()
+
+             SwipeAction("2") {}
+         } trailingActions: { _ in
+             SwipeAction("3") {}
+
+             SwipeAction("4") {}
+                 .allowSwipeToTrigger()
+         }
+     */
+    func allowSwipeToTrigger() -> SwipeAction {
         var view = self
         view.isSwipeEdge = true
         return view
@@ -1367,4 +1382,15 @@ extension View {
 struct ContentSizeReaderPreferenceKey: PreferenceKey {
     static var defaultValue: CGSize { return CGSize() }
     static func reduce(value: inout CGSize, nextValue: () -> CGSize) { value = nextValue() }
+}
+
+struct NavigationBarTitleKey: PreferenceKey {
+    static var defaultValue: String = ""
+    static func reduce(value: inout String, nextValue: () -> String) { value = nextValue() }
+}
+
+extension View {
+    func navigationBarTitle(_ title: String) -> some View {
+        preference(key: NavigationBarTitleKey.self, value: title)
+    }
 }

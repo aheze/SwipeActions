@@ -56,7 +56,7 @@ extension ContentView {
             .foregroundColor(.white)
         } trailingActions: { context in
             SwipeAction("Trailing") {}
-                .swipeActionEdgeStyling()
+                .allowSwipeToTrigger()
         }
         .swipeToTriggerTrailingEdge(true)
         .swipeReadyToExpandPadding(0)

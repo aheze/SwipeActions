@@ -47,7 +47,7 @@ extension ContentView {
                         }
                     }
                 }
-                .swipeActionEdgeStyling()
+                .allowSwipeToTrigger()
             }
             .swipeToTriggerTrailingEdge(true)
         }
@@ -75,7 +75,7 @@ extension ContentView {
                         }
                     }
                 }
-                .swipeActionEdgeStyling()
+                .allowSwipeToTrigger()
             }
             .swipeToTriggerTrailingEdge(true)
         }

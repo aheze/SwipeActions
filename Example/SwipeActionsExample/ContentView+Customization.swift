@@ -41,7 +41,7 @@ extension ContentView {
                     VisualEffectView(.systemThinMaterial)
                         .brightness(highlight ? -0.1 : 0)
                 }
-                .swipeActionEdgeStyling()
+                .allowSwipeToTrigger()
             }
             .swipeToTriggerTrailingEdge(true)
         }

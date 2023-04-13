@@ -102,7 +102,7 @@ extension ContentView {
                         }
                     }
                 }
-                .swipeActionEdgeStyling()
+                .allowSwipeToTrigger()
                 .font(.title3.weight(.medium))
                 .foregroundColor(.white)
             }
