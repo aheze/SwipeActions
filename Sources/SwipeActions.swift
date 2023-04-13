@@ -97,7 +97,7 @@ public struct SwipeContext {
 
     /// The opacity of the swipe actions, determined by `actionsVisibleStartPoint` and `actionsVisibleEndPoint`.
     public var opacity = Double(0)
-    
+
     /// If the user is swiping or not.
     public var currentlyDragging = false
 }
@@ -453,7 +453,11 @@ extension SwipeView {
                 state.wrappedValue
             } set: { newValue in
                 state.wrappedValue = newValue
-                currentSide = side
+
+                /// Set the current side to the action's side if necessary.
+                if newValue != .closed {
+                    currentSide = side
+                }
 
                 /// Update the visual state to the client's new selection.
                 update(side: side, to: newValue)

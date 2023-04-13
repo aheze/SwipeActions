@@ -34,24 +34,47 @@ struct RowSwipeView: View {
                 .background(Color.blue.opacity(0.1))
                 .cornerRadius(32)
         } leadingActions: { _ in
+            SwipeAction("Leading") {}
+                .swipeSelection(selectedTag: $selectedTag, tag: tag)
         } trailingActions: { context in
-            SwipeAction("Hello!") {}
-                .onChange(of: context.currentlyDragging) { newValue in
-                    if newValue {
-                        selectedTag = tag
-                    }
-                }
-                .onChange(of: context.state.wrappedValue) { newValue in
-                    if newValue == .closed, selectedTag == tag {
-                        selectedTag = nil
-                    }
-                }
-                .onChange(of: selectedTag) { newValue in
-                    if selectedTag != tag, context.state.wrappedValue != .closed {
-                        context.state.wrappedValue = .closed
-                    }
-                }
+            SwipeAction("Trailing") {}
+                .swipeSelection(selectedTag: $selectedTag, tag: tag)
         }
+    }
+}
+
+extension View {
+    func swipeSelection<Tag: Equatable>(selectedTag: Binding<Tag?>, tag: Tag) -> some View {
+        modifier(
+            SwipeSelectionModifier(selectedTag: selectedTag, tag: tag)
+        )
+    }
+}
+
+struct SwipeSelectionModifier<Tag: Equatable>: ViewModifier {
+    @Binding var selectedTag: Tag?
+    var tag: Tag
+
+    @Environment(\.swipeContext) var swipeContext
+
+    func body(content: Content) -> some View {
+        content
+            .onChange(of: swipeContext.currentlyDragging) { newValue in
+                if newValue {
+                    selectedTag = tag
+                }
+            }
+            .onChange(of: swipeContext.state.wrappedValue) { newValue in
+                if newValue == .closed, selectedTag == tag {
+                    selectedTag = nil
+                }
+            }
+            .onChange(of: selectedTag) { newValue in
+                if selectedTag != tag, swipeContext.state.wrappedValue != .closed {
+                    print("Closing \(tag)")
+                    swipeContext.state.wrappedValue = .closed
+                }
+            }
     }
 }
 
