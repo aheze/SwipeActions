@@ -90,7 +90,6 @@ extension ContentView {
             SwipeView {
                 Container(title: "Swipe to Delete", details: ".transition(.swipeDelete)", cornerRadius: 0, backgroundColor: .clear)
                     .contentShape(Rectangle())
-            } leadingActions: { _ in
             } trailingActions: { _ in
                 SwipeAction(systemImage: "trash", backgroundColor: .red, highlightOpacity: 1) {
                     withAnimation(.spring(response: 0.3, dampingFraction: 1, blendDuration: 1)) {
@@ -119,7 +118,6 @@ extension ContentView {
         SwipeView {
             Container(title: "Don't Fade", details: ".swipeActionsVisibleStartPoint(0)", ".swipeActionsVisibleEndPoint(0)", cornerRadius: 0, backgroundColor: .clear)
                 .contentShape(Rectangle())
-        } leadingActions: { _ in
         } trailingActions: { _ in
             SwipeAction("One", backgroundColor: .green) {}
                 .foregroundColor(.white)

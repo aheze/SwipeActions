@@ -13,7 +13,6 @@ extension ContentView {
     @ViewBuilder var basics: some View {
         SwipeView {
             Container(title: "Basic")
-        } leadingActions: { _ in
         } trailingActions: { _ in
             SwipeAction("Tap Me!") {}
         }
@@ -28,7 +27,6 @@ extension ContentView {
 
         SwipeView {
             Container(title: "Multiple", details: #"SwipeAction("1") {}"#, #"SwipeAction("2") {}"#)
-        } leadingActions: { _ in
         } trailingActions: { _ in
             SwipeAction("1") {}
             SwipeAction("2") {}
@@ -37,7 +35,6 @@ extension ContentView {
         if showingSwipeToTrigger {
             SwipeView {
                 Container(title: "Swipe to Trigger", details: ".swipeActionEdgeStyling()", ".swipeToTriggerTrailingEdge(true)")
-            } leadingActions: { _ in
             } trailingActions: { _ in
                 SwipeAction("Clear") {
                     withAnimation(.spring()) {
@@ -65,7 +62,6 @@ extension ContentView {
                     ".swipeActionEdgeStyling()",
                     ".swipeToTriggerTrailingEdge(true)"
                 )
-            } leadingActions: { _ in
             } trailingActions: { _ in
                 SwipeAction("1") {}
                 SwipeAction("Dismiss") {

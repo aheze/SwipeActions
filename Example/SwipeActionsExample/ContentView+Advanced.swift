@@ -54,8 +54,6 @@ extension ContentView {
                 .brightness(-0.5)
             }
             .foregroundColor(.white)
-        } leadingActions: { _ in
-
         } trailingActions: { context in
             SwipeAction("Trailing") {}
                 .swipeActionEdgeStyling()
@@ -100,7 +98,6 @@ struct TapToOpenView: View {
             ._onButtonGesture { pressing in
                 self.pressing = pressing
             } perform: {}
-        } leadingActions: { _ in
         } trailingActions: { context in
             SwipeAction("Tap to Close!") {
                 context.state.wrappedValue = .closed

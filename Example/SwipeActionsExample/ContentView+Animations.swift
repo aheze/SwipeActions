@@ -25,7 +25,6 @@ extension ContentView {
                             .strokeBorder(Color.blue, lineWidth: 2)
                     )
             }
-        } leadingActions: { _ in
         } trailingActions: { context in
             SwipeAction("1") {}
             SwipeAction("2") {}
@@ -49,7 +48,6 @@ extension ContentView {
                             .strokeBorder(Color.green, lineWidth: 2)
                     )
             }
-        } leadingActions: { _ in
         } trailingActions: { context in
             SwipeAction("1") {}
             SwipeAction("2") {}
@@ -73,7 +71,6 @@ extension ContentView {
                             .strokeBorder(Color.yellow, lineWidth: 2)
                     )
             }
-        } leadingActions: { _ in
         } trailingActions: { context in
             SwipeAction("1") {}
             SwipeAction("2") {}

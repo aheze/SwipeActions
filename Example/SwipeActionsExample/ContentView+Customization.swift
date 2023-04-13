@@ -16,7 +16,6 @@ extension ContentView {
                 Container(title: "Notification", details: "Swipe for options") {
                     VisualEffectView(.systemThinMaterial)
                 }
-            } leadingActions: { _ in
             } trailingActions: { _ in
                 SwipeAction {} label: { highlight in
                     Text("Options")
@@ -58,7 +57,6 @@ extension ContentView {
             ) {
                 VisualEffectView(.systemThickMaterial)
             }
-        } leadingActions: { _ in
         } trailingActions: { _ in
             SwipeAction(
                 systemImage: "square.and.arrow.up",
@@ -80,7 +78,6 @@ extension ContentView {
             ) {
                 VisualEffectView(.systemChromeMaterial)
             }
-        } leadingActions: { _ in
         } trailingActions: { _ in
             SwipeAction(
                 systemImage: "checkmark.circle.fill",
