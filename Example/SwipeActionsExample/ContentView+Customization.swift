@@ -11,7 +11,7 @@ import SwipeActions
 
 extension ContentView {
     @ViewBuilder var customization: some View {
-        if showingMCustomizationClear {
+        if showingCustomizationClear {
             SwipeView {
                 Container(title: "Notification", details: "Swipe for options") {
                     VisualEffectView(.systemThinMaterial)
@@ -24,18 +24,18 @@ extension ContentView {
                     VisualEffectView(.systemThinMaterial)
                         .brightness(highlight ? -0.1 : 0)
                 }
-                
+
                 SwipeAction {
                     withAnimation(.spring(response: 0.3, dampingFraction: 1, blendDuration: 1)) {
-                        showingMCustomizationClear = false
+                        showingCustomizationClear = false
                     }
-                    
+
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                         withAnimation(.spring(response: 0.3, dampingFraction: 1, blendDuration: 1)) {
-                            showingMCustomizationClear = true
+                            showingCustomizationClear = true
                         }
                     }
-                    
+
                 } label: { highlight in
                     Text("Clear")
                 } background: { highlight in

@@ -24,25 +24,31 @@ struct ContentView: View {
 
     @State var showingSwipeToTrigger = true
     @State var showingMultiplePlusSwipeToTrigger = true
-    @State var showingMCustomizationClear = true
+    @State var showingCustomizationClear = true
     @State var showingStylesSwipeToDelete = true
     @State var showingAlternateFooter = false
 
     @State var expandedSectionKinds = DemoSectionKind.allCases
+    @State var showingDebug = false
 
     var body: some View {
-        if #available(iOS 16.0, *) {
-            NavigationStack {
-                content
-                    .background(secondaryBackgroundColor)
-                    .navigationTitle("SwipeActions")
+        VStack {
+            if #available(iOS 16.0, *) {
+                NavigationStack {
+                    content
+                        .background(secondaryBackgroundColor)
+                        .navigationTitle("SwipeActions")
+                }
+            } else {
+                NavigationView {
+                    content
+                        .background(secondaryBackgroundColor)
+                        .navigationTitle("SwipeActions")
+                }
             }
-        } else {
-            NavigationView {
-                content
-                    .background(secondaryBackgroundColor)
-                    .navigationTitle("SwipeActions")
-            }
+        }
+        .sheet(isPresented: $showingDebug) {
+            DebugView()
         }
     }
 
@@ -156,7 +162,7 @@ struct ContentView: View {
             .padding(.bottom, 32)
         }
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
                 let shouldExpandAll: Bool = {
                     if expandedSectionKinds.count == DemoSectionKind.allCases.count {
                         return false
@@ -164,6 +170,14 @@ struct ContentView: View {
                         return true
                     }
                 }()
+
+                Button {
+                    withAnimation {
+                        showingDebug.toggle()
+                    }
+                } label: {
+                    Image(systemName: "slider.horizontal.3")
+                }
 
                 Button {
                     withAnimation(.spring(response: 0.4, dampingFraction: 1, blendDuration: 1)) {
