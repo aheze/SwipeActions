@@ -19,12 +19,38 @@ Add customizable swipe actions to any view.
 
 ### Installation
 
-SwipeActions is available via the [Swift Package Manager](https://developer.apple.com/documentation/swift_packages/adding_package_dependencies_to_your_app). Alternatively, because SwipeActions is contained within a single file, drag [`SwipeActions.swift`](https://github.com/aheze/SwipeActions/blob/main/Sources/SwipeActions.swift) into your project. Requires iOS 14+.
+SwipeActions is available via the [Swift Package Manager](https://developer.apple.com/documentation/swift_packages/adding_package_dependencies_to_your_app). Alternatively, because all of SwipeActions is contained within a single file, drag [`SwipeActions.swift`](https://github.com/aheze/SwipeActions/blob/main/Sources/SwipeActions.swift) into your project. Requires iOS 14+.
 
 ```
 https://github.com/aheze/SwipeActions
 ```
 
+### Usage
+
+```swift
+import SwiftUI
+import SwipeActions
+
+struct ContentView: View {
+    var body: some View {
+        SwipeView {
+            Text("Hello")
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 32)
+                .background(Color.blue.opacity(0.1))
+                .cornerRadius(32)
+        } leadingActions: { _ in
+        } trailingActions: { _ in
+            SwipeAction("World") {
+                print("Tapped!")
+            }
+        }
+        .padding()
+    }
+}
+```
+
+<img src="Assets/Result.png" width="300" alt="The result, 'World' displayed on the right.">
 
 ### Community
 

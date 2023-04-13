@@ -16,46 +16,58 @@ struct DebugView: View {
     @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
-        Color.clear.overlay {
-            LinearGradient(
-                colors: [.blue, .teal],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .overlay(
-                Circle()
-                    .fill(Color.green)
-                    .frame(width: 500, height: 500)
-                    .blur(radius: 100)
-                    .offset(x: -250, y: -250),
-                alignment: .topLeading
-            )
-            .overlay(
-                Circle()
-                    .fill(Color.purple)
-                    .frame(width: 800, height: 800)
-                    .blur(radius: 150)
-                    .offset(x: 500, y: 500),
-                alignment: .bottomTrailing
-            )
-            .drawingGroup()
-            .hueRotation(.degrees(hue ? 90 : 0))
-            .brightness(bright ? 1 : 0)
-            .ignoresSafeArea()
-            .onTapGesture {
-                presentationMode.wrappedValue.dismiss()
-            }
+        SwipeView {
+            Text("Hello")
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 32)
+                .background(Color.blue.opacity(0.1))
+                .cornerRadius(32)
+        } leadingActions: { _ in
+        } trailingActions: { _ in
+            SwipeAction("World") {}
         }
-        .overlay {
-            VStack(spacing: 12) {
-                if showingCustomizationClear {
-                    view
-                }
-                view
-                view
-            }
-            .padding(.horizontal, 20)
-        }
+        .padding()
+        
+//        Color.clear.overlay {
+//            LinearGradient(
+//                colors: [.blue, .teal],
+//                startPoint: .top,
+//                endPoint: .bottom
+//            )
+//            .overlay(
+//                Circle()
+//                    .fill(Color.green)
+//                    .frame(width: 500, height: 500)
+//                    .blur(radius: 100)
+//                    .offset(x: -250, y: -250),
+//                alignment: .topLeading
+//            )
+//            .overlay(
+//                Circle()
+//                    .fill(Color.purple)
+//                    .frame(width: 800, height: 800)
+//                    .blur(radius: 150)
+//                    .offset(x: 500, y: 500),
+//                alignment: .bottomTrailing
+//            )
+//            .drawingGroup()
+//            .hueRotation(.degrees(hue ? 90 : 0))
+//            .brightness(bright ? 1 : 0)
+//            .ignoresSafeArea()
+//            .onTapGesture {
+//                presentationMode.wrappedValue.dismiss()
+//            }
+//        }
+//        .overlay {
+//            VStack(spacing: 12) {
+//                if showingCustomizationClear {
+//                    view
+//                }
+//                view
+//                view
+//            }
+//            .padding(.horizontal, 20)
+//        }
     }
     
     var view: some View {
@@ -138,3 +150,4 @@ struct DebugView: View {
         .swipeActionWidth(120)
     }
 }
+
