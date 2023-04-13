@@ -10,21 +10,19 @@ import SwiftUI
 import SwipeActions
 
 struct DebugView: View {
-    @State var selectedTag: UUID?
-
     var body: some View {
         VStack {
-            RowSwipeView(selectedTag: $selectedTag)
-            RowSwipeView(selectedTag: $selectedTag)
-            RowSwipeView(selectedTag: $selectedTag)
+            SwipeViewGroup {
+                RowSwipeView()
+                RowSwipeView()
+                RowSwipeView()
+            }
         }
         .padding()
     }
 }
 
 struct RowSwipeView: View {
-    @Binding var selectedTag: UUID?
-
     var body: some View {
         SwipeView {
             Text("Hello!")
@@ -34,44 +32,9 @@ struct RowSwipeView: View {
                 .cornerRadius(32)
         } leadingActions: { _ in
             SwipeAction("Leading") {}
-                .autoCloseSide(selectedTag: $selectedTag)
         } trailingActions: { context in
             SwipeAction("Trailing") {}
-                .autoCloseSide(selectedTag: $selectedTag)
         }
-    }
-}
-
-extension View {
-    func autoCloseSide(selectedTag: Binding<UUID?>) -> some View {
-        modifier(
-            SwipeSelectionModifier(selectedTag: selectedTag)
-        )
-    }
-}
-
-struct SwipeSelectionModifier: ViewModifier {
-    @Binding var selectedTag: UUID?
-
-    @Environment(\.swipeContext) var swipeContext
-
-    func body(content: Content) -> some View {
-        content
-            .onChange(of: swipeContext.currentlyDragging) { newValue in
-                if newValue {
-                    selectedTag = swipeContext.swipeViewID
-                }
-            }
-            .onChange(of: swipeContext.state.wrappedValue) { newValue in
-                if newValue == .closed, selectedTag == swipeContext.swipeViewID {
-                    selectedTag = nil
-                }
-            }
-            .onChange(of: selectedTag) { newValue in
-                if selectedTag != swipeContext.swipeViewID, swipeContext.state.wrappedValue != .closed {
-                    swipeContext.state.wrappedValue = .closed
-                }
-            }
     }
 }
 

@@ -100,7 +100,7 @@ public struct SwipeContext {
 
     /// If the user is swiping or not.
     public var currentlyDragging = false
-    
+
     /// The ID of the swipe view, used for auto-closing.
     public var swipeViewID = UUID()
 }
@@ -178,8 +178,6 @@ public struct SwipeOptions {
 
     /// Values for controlling the trigger animation.
     var offsetTriggerAnimationStiffness = Double(160), offsetTriggerAnimationDamping = Double(70)
-    
-    
 }
 
 // MARK: - Environment
@@ -188,10 +186,36 @@ public struct SwipeContextKey: EnvironmentKey {
     public static let defaultValue = SwipeContext(state: .constant(nil), side: .leading)
 }
 
+public struct SwipeViewGroupSelectionKey: EnvironmentKey {
+    public static let defaultValue: Binding<UUID?> = .constant(nil)
+}
+
 public extension EnvironmentValues {
     var swipeContext: SwipeContext {
         get { self[SwipeContextKey.self] }
         set { self[SwipeContextKey.self] = newValue }
+    }
+
+    var swipeViewGroupSelection: Binding<UUID?> {
+        get { self[SwipeViewGroupSelectionKey.self] }
+        set { self[SwipeViewGroupSelectionKey.self] = newValue }
+    }
+}
+
+// MARK: - Group view
+
+public struct SwipeViewGroup<Content: View>: View {
+    @ViewBuilder var content: () -> Content
+
+    @State var selection: UUID?
+
+    public init(@ViewBuilder content: @escaping () -> Content) {
+        self.content = content
+    }
+
+    public var body: some View {
+        content()
+            .environment(\.swipeViewGroupSelection, $selection)
     }
 }
 
@@ -309,11 +333,16 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
     @ViewBuilder public var leadingActions: (SwipeContext) -> LeadingActions
     @ViewBuilder public var trailingActions: (SwipeContext) -> TrailingActions
 
+    // MARK: - Environment
+
+    /// Read the `swipeViewGroupSelection` from the parent `SwipeViewGroup` (if it exists).
+    @Environment(\.swipeViewGroupSelection) var swipeViewGroupSelection
+
     // MARK: - Internal state
-    
+
     /// The ID of the view. Set `options.id` to override this.
     @State var id = UUID()
-    
+
     /// The current side that's showing the actions.
     @State var currentSide: SwipeSide?
 
@@ -412,6 +441,38 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
             if changed, options.enableTriggerHaptics {
                 let generator = UIImpactFeedbackGenerator(style: .rigid)
                 generator.impactOccurred()
+            }
+        }
+        
+        // MARK: - Receive `SwipeViewGroup` events
+        .onChange(of: currentlyDragging) { newValue in
+            if newValue {
+                swipeViewGroupSelection.wrappedValue = id
+            }
+        }
+        .onChange(of: leadingState) { newValue in
+            if newValue == .closed, swipeViewGroupSelection.wrappedValue == id {
+                swipeViewGroupSelection.wrappedValue = nil
+            }
+        }
+        .onChange(of: trailingState) { newValue in
+            if newValue == .closed, swipeViewGroupSelection.wrappedValue == id {
+                swipeViewGroupSelection.wrappedValue = nil
+            }
+        }
+        .onChange(of: swipeViewGroupSelection.wrappedValue) { newValue in
+            if swipeViewGroupSelection.wrappedValue != id {
+                currentSide = nil
+                
+                if leadingState != .closed {
+                    leadingState = .closed
+                    close(velocity: 0)
+                }
+
+                if trailingState != .closed {
+                    trailingState = .closed
+                    close(velocity: 0)
+                }
             }
         }
     }
