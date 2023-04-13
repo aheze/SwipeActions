@@ -115,7 +115,12 @@ struct ContentView: View {
                                 .font(.system(size: 100))
                                 .transition(.scale(scale: 1.2).combined(with: .opacity))
                         } else {
-                            VStack(spacing: 14) {
+                            VStack(spacing: 16) {
+                                Image("SwipeActions")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 120, height: 120)
+
                                 Text("[Made by A. Zheng](https://twitter.com/aheze0)")
                                     .font(.system(.body, design: .monospaced).weight(.semibold))
 
@@ -127,7 +132,7 @@ struct ContentView: View {
                             }
                             .multilineTextAlignment(.center)
                             .accentColor(.primary)
-                            .padding(.top, 8)
+                            .padding(.top, 20)
                             .transition(.scale(scale: 0.8).combined(with: .opacity))
                         }
                     }
