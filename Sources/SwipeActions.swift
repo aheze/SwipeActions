@@ -97,6 +97,9 @@ public struct SwipeContext {
 
     /// The opacity of the swipe actions, determined by `actionsVisibleStartPoint` and `actionsVisibleEndPoint`.
     public var opacity = Double(0)
+    
+    /// If the user is swiping or not.
+//    public var currentlyDragging = false
 }
 
 /// The style to reveal actions.
@@ -461,6 +464,8 @@ extension SwipeView {
                 numberOfActions: numberOfActions.wrappedValue,
                 side: side,
                 opacity: opacity
+//                ,
+//                currentlyDragging: false
             )
 
             actions(context) /// Call the `actions` view and pass in context.

@@ -36,22 +36,22 @@ struct RowSwipeView: View {
         } leadingActions: { _ in
         } trailingActions: { context in
             SwipeAction("Hello!") {}
-//                .onChange(of: context.currentlyDragging.wrappedValue) { newValue in
+//                .onChange(of: context.currentlyDragging) { newValue in
 //                    if newValue {
 //                        selectedTag = tag
 //                    }
 //                }
-//                .onChange(of: context.state) { newValue in
-//                    print("Changed! \(newValue)")
-//                    if newValue == .closed {
-//                        selectedTag = nil
-//                    }
-//                }
-//                .onChange(of: selectedTag) { newValue in
-//                    if selectedTag != tag {
-//                        context.state.wrappedValue = .closed
-//                    }
-//                }
+                .onChange(of: context.state.wrappedValue) { newValue in
+                    print("Changed! \(newValue)")
+                    if newValue == .closed {
+                        selectedTag = nil
+                    }
+                }
+                .onChange(of: selectedTag) { newValue in
+                    if selectedTag != tag {
+                        context.state.wrappedValue = .closed
+                    }
+                }
         }
     }
 }
@@ -61,7 +61,7 @@ struct RowSwipeView: View {
 //    @State var hue = false
 //    @State var bright = false
 //    @Environment(\.presentationMode) var presentationMode
-//    
+//
 //    var body: some View {
 //        SwipeView {
 //            Text("Hello")
@@ -74,7 +74,7 @@ struct RowSwipeView: View {
 //            SwipeAction("World") {}
 //        }
 //        .padding()
-//        
+//
 ////        Color.clear.overlay {
 ////            LinearGradient(
 ////                colors: [.blue, .teal],
@@ -116,7 +116,7 @@ struct RowSwipeView: View {
 ////            .padding(.horizontal, 20)
 ////        }
 //    }
-//    
+//
 //    var view: some View {
 //        SwipeView {
 //            HStack {
@@ -124,13 +124,13 @@ struct RowSwipeView: View {
 //                    Text("SwipeActions")
 //                        .font(.title3)
 //                        .fontWeight(.semibold)
-//                    
+//
 //                    Text("Swipe for options")
 //                        .multilineTextAlignment(.leading)
 //                        .font(.system(.body, design: .monospaced))
 //                }
 //                .frame(maxWidth: .infinity, alignment: .leading)
-//             
+//
 //                Image(systemName: "moon.fill")
 //                    .foregroundStyle(.secondary)
 //                    .font(.title3)
@@ -166,24 +166,24 @@ struct RowSwipeView: View {
 //                VisualEffectView(.systemThinMaterial)
 //                    .brightness(highlight ? -0.1 : 0)
 //            }
-//            
+//
 //            SwipeAction {
 //                withAnimation(.spring(response: 0.3, dampingFraction: 1, blendDuration: 1)) {
 //                    showingCustomizationClear = false
 //                }
-//                
+//
 //                DispatchQueue.main.asyncAfter(deadline: .now() + 6) {
 //                    withAnimation(.spring(response: 0.3, dampingFraction: 1, blendDuration: 1)) {
 //                        showingCustomizationClear = true
 //                    }
 //                }
-//                
+//
 //                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
 //                    withAnimation(.spring(response: 2.5, dampingFraction: 1, blendDuration: 1)) {
 //                        bright = true
 //                    }
 //                }
-//                
+//
 //            } label: { highlight in
 //                Text("Clear")
 //                    .opacity(0.75)
