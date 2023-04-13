@@ -116,12 +116,6 @@ public enum SwipeActionStyle {
 
 /// Options for configuring the swipe view.
 public struct SwipeOptions {
-    /// Enable triggering the leading edge via a drag.
-    var swipeToTriggerLeadingEdge = false
-
-    /// Enable triggering the trailing edge via a drag.
-    var swipeToTriggerTrailingEdge = false
-
     /// The minimum distance needed to drag to start the gesture. Should be more than 0 for best compatibility with other gestures/buttons.
     var swipeMinimumDistance = Double(2)
 
@@ -324,6 +318,7 @@ public struct SwipeAction<Label: View, Background: View>: View {
                 highlighted = false
             }
         }
+        .preference(key: AllowSwipeToTriggerKey.self, value: isSwipeEdge)
     }
 }
 
@@ -350,6 +345,11 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
     /// The ID of the view. Set `options.id` to override this.
     @State var id = UUID()
 
+    /// The size of the parent view.
+    @State var size = CGSize.zero
+
+    // MARK: - Actions state
+
     /// The current side that's showing the actions.
     @State var currentSide: SwipeSide?
 
@@ -362,6 +362,14 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
     /// These properties are set automatically via `SwipeActionsLayout`.
     @State var numberOfLeadingActions = 0
     @State var numberOfTrailingActions = 0
+
+    /// Enable triggering the leading edge via a drag.
+    @State var swipeToTriggerLeadingEdge = false
+
+    /// Enable triggering the trailing edge via a drag.
+    @State var swipeToTriggerTrailingEdge = false
+
+    // MARK: - Gesture state
 
     /// When you touch down with a second finger, the drag gesture freezes, but `currentlyDragging` will be accurate.
     @GestureState var currentlyDragging = false
@@ -377,9 +385,6 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
 
     /// The offset dragged in previous drag sessions.
     @State var savedOffset = Double(0)
-
-    /// The size of the parent view.
-    @State var size = CGSize.zero
 
     /// A view for adding swipe actions.
     public init(
@@ -402,6 +407,10 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
             actionsView(side: .leading, state: $leadingState, numberOfActions: $numberOfLeadingActions) { context in
                 leadingActions(context)
                     .environment(\.swipeContext, context)
+                    .onPreferenceChange(AllowSwipeToTriggerKey.self) { allow in
+                        print("allow leading? \(allow)")
+                        swipeToTriggerLeadingEdge = allow
+                    }
             },
             alignment: .leading
         )
@@ -409,6 +418,10 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
             actionsView(side: .trailing, state: $trailingState, numberOfActions: $numberOfTrailingActions) { context in
                 trailingActions(context)
                     .environment(\.swipeContext, context)
+                    .onPreferenceChange(AllowSwipeToTriggerKey.self) { allow in
+                        print("allow trailing? \(allow)")
+                        swipeToTriggerTrailingEdge = allow
+                    }
             },
             alignment: .trailing
         )
@@ -861,7 +874,7 @@ extension SwipeView {
 
             if totalOffset > leadingReadyToTriggerOffset {
                 setCurrentOffset = true
-                if options.swipeToTriggerLeadingEdge {
+                if swipeToTriggerLeadingEdge {
                     currentOffset = value.translation.width
                     leadingState = .triggering
                     trailingState = nil
@@ -877,7 +890,7 @@ extension SwipeView {
 
             if totalOffset < trailingReadyToTriggerOffset {
                 setCurrentOffset = true
-                if options.swipeToTriggerTrailingEdge {
+                if swipeToTriggerTrailingEdge {
                     currentOffset = value.translation.width
                     trailingState = .triggering
                     leadingState = nil
@@ -1083,14 +1096,14 @@ public extension SwipeView {
     /// Enable triggering the leading edge via a drag.
     func swipeToTriggerLeadingEdge(_ value: Bool) -> SwipeView {
         var view = self
-        view.options.swipeToTriggerLeadingEdge = value
+//        view.swipeToTriggerLeadingEdge = value
         return view
     }
 
     /// Enable triggering the trailing edge via a drag.
     func swipeToTriggerTrailingEdge(_ value: Bool) -> SwipeView {
         var view = self
-        view.options.swipeToTriggerTrailingEdge = value
+//        view.swipeToTriggerTrailingEdge = value
         return view
     }
 
@@ -1384,13 +1397,7 @@ struct ContentSizeReaderPreferenceKey: PreferenceKey {
     static func reduce(value: inout CGSize, nextValue: () -> CGSize) { value = nextValue() }
 }
 
-struct NavigationBarTitleKey: PreferenceKey {
-    static var defaultValue: String = ""
-    static func reduce(value: inout String, nextValue: () -> String) { value = nextValue() }
-}
-
-extension View {
-    func navigationBarTitle(_ title: String) -> some View {
-        preference(key: NavigationBarTitleKey.self, value: title)
-    }
+struct AllowSwipeToTriggerKey: PreferenceKey {
+    static var defaultValue: Bool = false
+    static func reduce(value: inout Bool, nextValue: () -> Bool) { value = nextValue() }
 }
