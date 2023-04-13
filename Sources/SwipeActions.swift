@@ -204,6 +204,14 @@ public extension EnvironmentValues {
 
 // MARK: - Group view
 
+/**
+ To only allow one swipe view open at a time, use this view.
+
+ SwipeViewGroup {
+
+ }
+
+ */
 public struct SwipeViewGroup<Content: View>: View {
     @ViewBuilder var content: () -> Content
 
@@ -405,6 +413,9 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
             },
             alignment: .trailing
         )
+
+        // MARK: - Add gestures
+
         .highPriorityGesture( /// Add the drag gesture.
             DragGesture(minimumDistance: options.swipeMinimumDistance)
                 .updating($currentlyDragging) { value, state, transaction in
@@ -421,6 +432,9 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
                 end(value: latestDragGestureValueBackup, velocity: velocity)
             }
         }
+
+        // MARK: - Trigger haptics
+
         .onChange(of: leadingState) { [leadingState] newValue in
             /// Make sure the change was from `triggering` to `nil`, or the other way around.
             let changed =
@@ -443,8 +457,9 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
                 generator.impactOccurred()
             }
         }
-        
+
         // MARK: - Receive `SwipeViewGroup` events
+
         .onChange(of: currentlyDragging) { newValue in
             if newValue {
                 swipeViewGroupSelection.wrappedValue = id
@@ -463,7 +478,7 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
         .onChange(of: swipeViewGroupSelection.wrappedValue) { newValue in
             if swipeViewGroupSelection.wrappedValue != id {
                 currentSide = nil
-                
+
                 if leadingState != .closed {
                     leadingState = .closed
                     close(velocity: 0)
@@ -990,6 +1005,35 @@ public extension SwipeAction where Label == VStack<TupleView<(ModifiedContent<Im
         }
     }
 }
+
+/// A `SwipeView` with leading actions only.
+public extension SwipeView where TrailingActions == EmptyView {
+    init(
+        @ViewBuilder label: @escaping () -> Label,
+        @ViewBuilder leadingActions: @escaping (SwipeContext) -> LeadingActions
+    ) {
+        self.init(label: label, leadingActions: leadingActions) { _ in }
+    }
+}
+
+/// A `SwipeView` with trailing actions only.
+public extension SwipeView where LeadingActions == EmptyView {
+    init(
+        @ViewBuilder label: @escaping () -> Label,
+        @ViewBuilder trailingActions: @escaping (SwipeContext) -> TrailingActions
+    ) {
+        self.init(label: label, leadingActions: { _ in }, trailingActions: trailingActions)
+    }
+}
+
+/// A `SwipeView` with no actions.
+public extension SwipeView where LeadingActions == EmptyView, TrailingActions == EmptyView {
+    init(@ViewBuilder label: @escaping () -> Label) {
+        self.init(label: label) { _ in } trailingActions: { _ in }
+    }
+}
+
+// MARK: - Convenience modifiers
 
 public extension SwipeAction {
     /// Apply this to the rightmost edge action to enable drag-to-trigger.
