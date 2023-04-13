@@ -70,24 +70,32 @@ SwipeView {
     SwipeAction("World") {
         print("Tapped!")
     }
-    .swipeActionEdgeStyling() /// Modifiers for `SwipeAction` go here.
+    .allowSwipeToTrigger() /// Modifiers for `SwipeAction` go here.
 }
-.swipeToTriggerTrailingEdge(true) /// Modifiers for `SwipeView` go here.
+.swipeActionsStyle(.cascade) /// Modifiers for `SwipeView` go here.
 ```
 
 ```swift
 // MARK: - Available modifiers for `SwipeAction` (the side views)
 
-/**  
-  For leading actions:
-  Apply this to the leftmost edge action to enable drag-to-trigger.
-  You must also call `swipeToTriggerLeadingEdge(true)` on the `SwipeView`.
+/**
+ Apply this to the edge action to enable drag-to-trigger.
 
-  For trailing actions:
-  Apply this to the rightmost edge action to enable drag-to-trigger.
-  You must also call `swipeToTriggerTrailingEdge(true)` on the `SwipeView`.
-*/
-func swipeActionEdgeStyling() 
+     SwipeView {
+         Text("Swipe")
+     } leadingActions: { _ in
+         SwipeAction("1") {}
+             .allowSwipeToTrigger()
+
+         SwipeAction("2") {}
+     } trailingActions: { _ in
+         SwipeAction("3") {}
+
+         SwipeAction("4") {}
+             .allowSwipeToTrigger()
+     }
+ */
+func allowSwipeToTrigger(_ value: Bool = true)
 
 /// Constrain the action's content size (helpful for text).
 func swipeActionLabelFixedSize(_ value: Bool = true) 
@@ -101,14 +109,6 @@ func swipeActionChangeLabelVisibilityOnly(_ value: Bool)
 
 ```swift
 // MARK: - Available modifiers for `SwipeView` (the main view)
-
-/// Enable triggering the leading edge via a drag.
-/// You must also call `swipeActionEdgeStyling()` on the leftmost edge `SwipeAction`.
-func swipeToTriggerLeadingEdge(_ value: Bool) 
-
-/// Enable triggering the trailing edge via a drag.
-/// You must also call `swipeActionEdgeStyling()` on the rightmost edge `SwipeAction`.
-func swipeToTriggerTrailingEdge(_ value: Bool) 
 
 /// The minimum distance needed to drag to start the gesture. Should be more than 0 for best compatibility with other gestures/buttons.
 func swipeMinimumDistance(_ value: Double) 
