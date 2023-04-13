@@ -10,50 +10,48 @@ import SwiftUI
 import SwipeActions
 
 struct DebugView: View {
-    @State var selectedTag: String?
+    @State var selectedTag: UUID?
 
     var body: some View {
         VStack {
-            RowSwipeView(selectedTag: $selectedTag, tag: "First")
-            RowSwipeView(selectedTag: $selectedTag, tag: "Second")
-            RowSwipeView(selectedTag: $selectedTag, tag: "Third")
+            RowSwipeView(selectedTag: $selectedTag)
+            RowSwipeView(selectedTag: $selectedTag)
+            RowSwipeView(selectedTag: $selectedTag)
         }
         .padding()
     }
 }
 
 struct RowSwipeView: View {
-    @Binding var selectedTag: String?
-    var tag: String
+    @Binding var selectedTag: UUID?
 
     var body: some View {
         SwipeView {
-            Text(tag)
+            Text("Hello!")
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 32)
                 .background(Color.blue.opacity(0.1))
                 .cornerRadius(32)
         } leadingActions: { _ in
             SwipeAction("Leading") {}
-                .autoCloseSide(selectedTag: $selectedTag, tag: tag)
+                .autoCloseSide(selectedTag: $selectedTag)
         } trailingActions: { context in
             SwipeAction("Trailing") {}
-                .autoCloseSide(selectedTag: $selectedTag, tag: tag)
+                .autoCloseSide(selectedTag: $selectedTag)
         }
     }
 }
 
 extension View {
-    func autoCloseSide<Tag: Equatable>(selectedTag: Binding<Tag?>, tag: Tag) -> some View {
+    func autoCloseSide(selectedTag: Binding<UUID?>) -> some View {
         modifier(
-            SwipeSelectionModifier(selectedTag: selectedTag, tag: tag)
+            SwipeSelectionModifier(selectedTag: selectedTag)
         )
     }
 }
 
-struct SwipeSelectionModifier<Tag: Equatable>: ViewModifier {
-    @Binding var selectedTag: Tag?
-    var tag: Tag
+struct SwipeSelectionModifier: ViewModifier {
+    @Binding var selectedTag: UUID?
 
     @Environment(\.swipeContext) var swipeContext
 
@@ -61,17 +59,16 @@ struct SwipeSelectionModifier<Tag: Equatable>: ViewModifier {
         content
             .onChange(of: swipeContext.currentlyDragging) { newValue in
                 if newValue {
-                    selectedTag = tag
+                    selectedTag = swipeContext.swipeViewID
                 }
             }
             .onChange(of: swipeContext.state.wrappedValue) { newValue in
-                if newValue == .closed, selectedTag == tag {
+                if newValue == .closed, selectedTag == swipeContext.swipeViewID {
                     selectedTag = nil
                 }
             }
             .onChange(of: selectedTag) { newValue in
-                if selectedTag != tag, swipeContext.state.wrappedValue != .closed {
-                    print("Closing \(tag)")
+                if selectedTag != swipeContext.swipeViewID, swipeContext.state.wrappedValue != .closed {
                     swipeContext.state.wrappedValue = .closed
                 }
             }
