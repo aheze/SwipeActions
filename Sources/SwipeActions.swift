@@ -256,11 +256,11 @@ public struct SwipeAction<Label: View, Background: View>: View {
         Button(action: action) {
             background(highlighted)
                 .overlay(
-                    label(labelAlignment)
+                    label(highlighted)
                         .opacity(labelOpacity)
                         .fixedSize(horizontal: labelFixedSize, vertical: labelFixedSize)
                         .padding(.horizontal, labelHorizontalPadding),
-                    alignment: alignment
+                    alignment: labelAlignment
                 )
         }
         .opacity(totalOpacity)
