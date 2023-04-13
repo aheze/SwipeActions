@@ -101,43 +101,76 @@ public struct SwipeContext {
 
 /// The style to reveal actions.
 public enum SwipeActionStyle {
+    /// Fully render actions, but reveal them using a mask.
     case mask
+
+    /// All actions have equal widths, taking up all available space together.
     case equalWidths
+
+    /// A "overlapping" style.
     case cascade
 }
 
 /// Options for configuring the swipe view.
 public struct SwipeOptions {
-    /// If true, you can change from the leading to the trailing actions in one single swipe.
-    var allowSingleSwipeAcross = false
+    /// Enable triggering the leading edge via a drag.
     var swipeToTriggerLeadingEdge = false
+
+    /// Enable triggering the trailing edge via a drag.
     var swipeToTriggerTrailingEdge = false
+
+    /// The minimum distance needed to drag to start the gesture. Should be more than 0 for best compatibility with other gestures/buttons.
     var swipeMinimumDistance = Double(2)
 
+    /// The style to use (`mask`, `equalWidths`, or `cascade`).
     var actionsStyle = SwipeActionStyle.mask
+
+    /// The corner radius that encompasses all actions.
     var actionsMaskCornerRadius = Double(20)
+
+    /// At what point the actions start becoming visible.
     var actionsVisibleStartPoint = Double(50)
+
+    /// At what point the actions become fully visible.
     var actionsVisibleEndPoint = Double(100)
 
+    /// The corner radius for each action.
     var actionCornerRadius = Double(32)
+
+    /// The width for each action.
     var actionWidth = Double(100)
 
+    /// Spacing between actions and the label view.
     var spacing = Double(8)
+
+    /// The point where the user must drag to expand actions.
     var readyToExpandPadding = Double(50)
+
+    /// The point where the user must drag to enter the `triggering` state.
     var readyToTriggerPadding = Double(20)
+
+    /// Ensure that the user must drag a significant amount to trigger the edge action, even if the actions' total width is small.
     var minimumPointToTrigger = Double(200)
 
-    /// Applies if `swipeToTrigger` is true.
+    /// Applies if `swipeToTriggerLeadingEdge/swipeToTriggerTrailingEdge` is true.
     var enableTriggerHaptics = true
 
-    /// Applies if `swipeToTrigger` is false.
+    /// Applies if `swipeToTriggerLeadingEdge/swipeToTriggerTrailingEdge` is false, or when there's no actions on one side.
     var stretchRubberBandingPower = Double(0.7)
 
-    /// The animation used for adjusting the content's view.
+    /// If true, you can change from the leading to the trailing actions in one single swipe.
+    var allowSingleSwipeAcross = false
+
+    /// The animation used for adjusting the content's view when it's triggered.
     var actionContentTriggerAnimation = Animation.spring(response: 0.2, dampingFraction: 1, blendDuration: 1)
 
+    /// Values for controlling the close animation.
     var offsetCloseAnimationStiffness = Double(160), offsetCloseAnimationDamping = Double(70)
+
+    /// Values for controlling the expand animation.
     var offsetExpandAnimationStiffness = Double(160), offsetExpandAnimationDamping = Double(70)
+
+    /// Values for controlling the trigger animation.
     var offsetTriggerAnimationStiffness = Double(160), offsetTriggerAnimationDamping = Double(70)
 }
 
@@ -886,6 +919,111 @@ public extension SwipeAction {
 }
 
 public extension SwipeView {
+    /// Enable triggering the leading edge via a drag.
+    func swipeToTriggerLeadingEdge(_ value: Bool) -> SwipeView {
+        var view = self
+        view.options.swipeToTriggerLeadingEdge = value
+        return view
+    }
+
+    /// Enable triggering the trailing edge via a drag.
+    func swipeToTriggerTrailingEdge(_ value: Bool) -> SwipeView {
+        var view = self
+        view.options.swipeToTriggerTrailingEdge = value
+        return view
+    }
+
+    /// The minimum distance needed to drag to start the gesture. Should be more than 0 for best compatibility with other gestures/buttons.
+    func swipeMinimumDistance(_ value: Double) -> SwipeView {
+        var view = self
+        view.options.swipeMinimumDistance = value
+        return view
+    }
+
+    /// The style to use (`mask`, `equalWidths`, or `cascade`).
+    func swipeActionsStyle(_ value: SwipeActionStyle) -> SwipeView {
+        var view = self
+        view.options.actionsStyle = value
+        return view
+    }
+
+    /// The corner radius that encompasses all actions.
+    func swipeActionsMaskCornerRadius(_ value: Double) -> SwipeView {
+        var view = self
+        view.options.actionsMaskCornerRadius = value
+        return view
+    }
+
+    /// At what point the actions start becoming visible.
+    func swipeActionsVisibleStartPoint(_ value: Double) -> SwipeView {
+        var view = self
+        view.options.actionsVisibleStartPoint = value
+        return view
+    }
+
+    /// At what point the actions become fully visible.
+    func swipeActionsVisibleEndPoint(_ value: Double) -> SwipeView {
+        var view = self
+        view.options.actionsVisibleEndPoint = value
+        return view
+    }
+
+    /// The corner radius for each action.
+    func swipeActionCornerRadius(_ value: Double) -> SwipeView {
+        var view = self
+        view.options.actionCornerRadius = value
+        return view
+    }
+
+    /// The width for each action.
+    func swipeActionWidth(_ value: Double) -> SwipeView {
+        var view = self
+        view.options.actionWidth = value
+        return view
+    }
+
+    /// Spacing between actions and the label view.
+    func swipeSpacing(_ value: Double) -> SwipeView {
+        var view = self
+        view.options.spacing = value
+        return view
+    }
+
+    /// The point where the user must drag to expand actions.
+    func swipeReadyToExpandPadding(_ value: Double) -> SwipeView {
+        var view = self
+        view.options.readyToExpandPadding = value
+        return view
+    }
+
+    /// The point where the user must drag to enter the `triggering` state.
+    func swipeReadyToTriggerPadding(_ value: Double) -> SwipeView {
+        var view = self
+        view.options.readyToTriggerPadding = value
+        return view
+    }
+
+    /// Ensure that the user must drag a significant amount to trigger the edge action, even if the actions' total width is small.
+    func swipeMinimumPointToTrigger(_ value: Double) -> SwipeView {
+        var view = self
+        view.options.minimumPointToTrigger = value
+        return view
+    }
+
+    /// Applies if `swipeToTriggerLeadingEdge/swipeToTriggerTrailingEdge` is true.
+    func swipeEnableTriggerHaptics(_ value: Bool) -> SwipeView {
+        var view = self
+        view.options.enableTriggerHaptics = value
+        return view
+    }
+
+    /// Applies if `swipeToTriggerLeadingEdge/swipeToTriggerTrailingEdge` is false, or when there's no actions on one side.
+    func swipeStretchRubberBandingPower(_ value: Double) -> SwipeView {
+        var view = self
+        view.options.stretchRubberBandingPower = value
+        return view
+    }
+
     /// If true, you can change from the leading to the trailing actions in one single swipe.
     func swipeAllowSingleSwipeAcross(_ value: Bool) -> SwipeView {
         var view = self
@@ -893,104 +1031,14 @@ public extension SwipeView {
         return view
     }
 
-    func swipeToTriggerLeadingEdge(_ value: Bool) -> SwipeView {
-        var view = self
-        view.options.swipeToTriggerLeadingEdge = value
-        return view
-    }
-
-    func swipeToTriggerTrailingEdge(_ value: Bool) -> SwipeView {
-        var view = self
-        view.options.swipeToTriggerTrailingEdge = value
-        return view
-    }
-
-    func swipeMinimumDistance(_ value: Double) -> SwipeView {
-        var view = self
-        view.options.swipeMinimumDistance = value
-        return view
-    }
-
-    func swipeActionsStyle(_ value: SwipeActionStyle) -> SwipeView {
-        var view = self
-        view.options.actionsStyle = value
-        return view
-    }
-
-    func swipeActionsMaskCornerRadius(_ value: Double) -> SwipeView {
-        var view = self
-        view.options.actionsMaskCornerRadius = value
-        return view
-    }
-
-    func swipeActionsVisibleStartPoint(_ value: Double) -> SwipeView {
-        var view = self
-        view.options.actionsVisibleStartPoint = value
-        return view
-    }
-
-    func swipeActionsVisibleEndPoint(_ value: Double) -> SwipeView {
-        var view = self
-        view.options.actionsVisibleEndPoint = value
-        return view
-    }
-
-    func swipeActionCornerRadius(_ value: Double) -> SwipeView {
-        var view = self
-        view.options.actionCornerRadius = value
-        return view
-    }
-
-    func swipeActionWidth(_ value: Double) -> SwipeView {
-        var view = self
-        view.options.actionWidth = value
-        return view
-    }
-
-    func swipeSpacing(_ value: Double) -> SwipeView {
-        var view = self
-        view.options.spacing = value
-        return view
-    }
-
-    func swipeReadyToExpandPadding(_ value: Double) -> SwipeView {
-        var view = self
-        view.options.readyToExpandPadding = value
-        return view
-    }
-
-    func swipeReadyToTriggerPadding(_ value: Double) -> SwipeView {
-        var view = self
-        view.options.readyToTriggerPadding = value
-        return view
-    }
-
-    func swipeMinimumPointToTrigger(_ value: Double) -> SwipeView {
-        var view = self
-        view.options.minimumPointToTrigger = value
-        return view
-    }
-
-    /// Applies if `swipeToTrigger` is true.
-    func swipeEnableTriggerHaptics(_ value: Bool) -> SwipeView {
-        var view = self
-        view.options.enableTriggerHaptics = value
-        return view
-    }
-
-    /// Applies if `swipeToTrigger` is false.
-    func swipeStretchRubberBandingPower(_ value: Double) -> SwipeView {
-        var view = self
-        view.options.stretchRubberBandingPower = value
-        return view
-    }
-
+    /// The animation used for adjusting the content's view when it's triggered.
     func swipeActionContentTriggerAnimation(_ value: Animation) -> SwipeView {
         var view = self
         view.options.actionContentTriggerAnimation = value
         return view
     }
 
+    /// Values for controlling the close animation.
     func swipeOffsetCloseAnimation(stiffness: Double, damping: Double) -> SwipeView {
         var view = self
         view.options.offsetCloseAnimationStiffness = stiffness
@@ -998,6 +1046,7 @@ public extension SwipeView {
         return view
     }
 
+    /// Values for controlling the expand animation.
     func swipeOffsetExpandAnimation(stiffness: Double, damping: Double) -> SwipeView {
         var view = self
         view.options.offsetExpandAnimationStiffness = stiffness
@@ -1005,6 +1054,7 @@ public extension SwipeView {
         return view
     }
 
+    /// Values for controlling the trigger animation.
     func swipeOffsetTriggerAnimation(stiffness: Double, damping: Double) -> SwipeView {
         var view = self
         view.options.offsetTriggerAnimationStiffness = stiffness
@@ -1060,7 +1110,7 @@ public struct SwipeActionButtonStyle: ButtonStyle {
     }
 }
 
-/**
+/*
  Get the velocity from a drag gesture.
 
  From https://github.com/FluidGroup/swiftui-GestureVelocity
