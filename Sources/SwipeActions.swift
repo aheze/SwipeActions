@@ -911,8 +911,8 @@ public extension SwipeAction where Label == VStack<TupleView<(ModifiedContent<Im
 }
 
 public extension SwipeAction {
-    /// Apply this do the edge action to enable drag-to-trigger.
-    /// You must also set `swipeToTriggerLeadingEdge(true)`
+    /// Apply this to the rightmost edge action to enable drag-to-trigger.
+    /// You must also call `swipeToTriggerTrailingEdge(true)` on the `SwipeView`.
     func swipeActionEdgeStyling() -> SwipeAction {
         var view = self
         view.isSwipeEdge = true

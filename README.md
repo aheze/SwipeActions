@@ -55,7 +55,7 @@ struct ContentView: View {
 
 ### Examples
 
-Check out the [example app](https://github.com/aheze/SwipeActions/archive/refs/heads/main.zip) for all examples!
+Check out the [example app](https://github.com/aheze/SwipeActions/archive/refs/heads/main.zip) for all examples and advanced usage!
 
 ![2 screenshots of the example app](Assets/ExampleApp.png)
 
@@ -166,6 +166,48 @@ func swipeOffsetExpandAnimation(stiffness: Double, damping: Double)
 func swipeOffsetTriggerAnimation(stiffness: Double, damping: Double)
 ```
 
+Example usage of these modifiers is available in the [example app](https://github.com/aheze/SwipeActions/archive/refs/heads/main.zip).
+
+### Notes
+
+- To programmatically show/hide actions, use the `context` parameter.
+
+```swift
+import Combine
+import SwiftUI
+import SwipeActions
+
+struct ProgrammaticSwipeView: View {
+    @State var open = PassthroughSubject<Void, Never>()
+
+    var body: some View {
+        SwipeView {
+            Button {
+                open.send() /// Fire the `PassthroughSubject`.
+            } label: {
+                Text("Tap to Open")
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 32)
+                    .background(Color.blue.opacity(0.1))
+                    .cornerRadius(32)
+            }
+        } leadingActions: { _ in
+        } trailingActions: { context in
+            SwipeAction("Tap to Close") {
+                context.wrappedValue.state = .closed
+            }
+            .onReceive(open) { _ in /// Receive the `PassthroughSubject`.
+                context.wrappedValue.state = .expanded
+            }
+        }
+    }
+}
+```
+
+- Everything in the example app is swipeable — even the gray-capsule headers!
+
+<img src="Assets/ExampleAppHeaders.png" width="300" alt="The 'Styles' header swiped to the left and the 'Open' action shown on the right.">
+
 ### Community
 
 Author | Contributing | Need Help?
@@ -201,5 +243,3 @@ SOFTWARE.
 ---
 
 https://user-images.githubusercontent.com/49819455/231671743-baca394e-fc74-4062-83eb-2024b8add924.mp4
-
-
