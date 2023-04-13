@@ -40,7 +40,7 @@ extension ContentView {
             Container(
                 title: "Adjusted Thresholds",
                 details:
-                #".swipeToTriggerTrailingEdge(true)"#,
+                #".allowSwipeToTrigger()"#,
                 #".swipeReadyToExpandPadding(0)"#,
                 #".swipeReadyToTriggerPadding(0)"#,
                 #".swipeMinimumPointToTrigger(0)"#,

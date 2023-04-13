@@ -34,7 +34,7 @@ extension ContentView {
 
         if showingSwipeToTrigger {
             SwipeView {
-                Container(title: "Swipe to Trigger", details: ".swipeActionEdgeStyling()", ".swipeToTriggerTrailingEdge(true)")
+                Container(title: "Swipe to Trigger", details: ".allowSwipeToTrigger()")
             } trailingActions: { _ in
                 SwipeAction("Clear") {
                     withAnimation(.spring()) {
@@ -58,8 +58,7 @@ extension ContentView {
                     details:
                     #"SwipeAction("1") {}"#,
                     #"SwipeAction("Dismiss") {}"#,
-                    ".swipeActionEdgeStyling()",
-                    ".swipeToTriggerTrailingEdge(true)"
+                    ".allowSwipeToTrigger()"
                 )
             } trailingActions: { _ in
                 SwipeAction("1") {}

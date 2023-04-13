@@ -190,7 +190,6 @@ struct ProgrammaticSwipeView: View {
                     .background(Color.blue.opacity(0.1))
                     .cornerRadius(32)
             }
-        } leadingActions: { _ in
         } trailingActions: { context in
             SwipeAction("Tap to Close") {
                 context.wrappedValue.state = .closed
@@ -211,7 +210,6 @@ SwipeView {
         .frame(maxWidth: .infinity)
         .padding(.vertical, 32)
         .contentShape(Rectangle()) /// Enable swiping on the empty space.
-} leadingActions: { _ in
 } trailingActions: { _ in
     SwipeAction("Hello!") { }
 }
