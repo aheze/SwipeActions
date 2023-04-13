@@ -32,48 +32,24 @@ struct ContentView: View {
     @State var showingDebug = false
 
     var body: some View {
-        SwipeView {
-            Container(
-                title: "Multiple + Swipe to Trigger",
-                details:
-                #"SwipeAction("1") {}"#,
-                #"SwipeAction("Dismiss") {}"#,
-                ".swipeActionEdgeStyling()",
-                ".swipeToTriggerTrailingEdge(true)"
-            )
-        } trailingActions: { _ in
-            SwipeAction("1") {}
-            SwipeAction("Dismiss") {
-                withAnimation(.spring()) {
-                    showingMultiplePlusSwipeToTrigger = false
+        VStack {
+            if #available(iOS 16.0, *) {
+                NavigationStack {
+                    content
+                        .background(secondaryBackgroundColor)
+                        .navigationTitle("SwipeActions")
                 }
-
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                    withAnimation(.spring()) {
-                        showingMultiplePlusSwipeToTrigger = true
-                    }
+            } else {
+                NavigationView {
+                    content
+                        .background(secondaryBackgroundColor)
+                        .navigationTitle("SwipeActions")
                 }
             }
-            .allowSwipeToTrigger()
         }
-//        VStack {
-//            if #available(iOS 16.0, *) {
-//                NavigationStack {
-//                    content
-//                        .background(secondaryBackgroundColor)
-//                        .navigationTitle("SwipeActions")
-//                }
-//            } else {
-//                NavigationView {
-//                    content
-//                        .background(secondaryBackgroundColor)
-//                        .navigationTitle("SwipeActions")
-//                }
-//            }
-//        }
-//        .sheet(isPresented: $showingDebug) {
-//            DebugView()
-//        }
+        .sheet(isPresented: $showingDebug) {
+            DebugView()
+        }
     }
 
     var content: some View {

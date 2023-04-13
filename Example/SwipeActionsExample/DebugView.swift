@@ -22,8 +22,6 @@ struct DebugView: View {
     }
 }
 
-//SwipeView {} leadingActions: { _ in } trailingActions: { _ in }
-
 struct RowSwipeView: View {
     var body: some View {
         SwipeView {
