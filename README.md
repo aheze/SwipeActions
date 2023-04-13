@@ -217,6 +217,16 @@ SwipeView {
 }
 ```
 
+- To automatically close swipe views when another one is swiped (accordion style), use `SwipeViewGroup`.
+
+```swift
+ SwipeViewGroup {
+     SwipeView {} /// Only one of the actions will be shown.
+     SwipeView {}
+     SwipeView {}
+ }
+```
+
 - Everything in the example app is swipeable — even the gray-capsule headers!
 
 <img src="Assets/ExampleAppHeaders.png" width="300" alt="The 'Styles' header swiped to the left and the 'Open' action shown on the right.">

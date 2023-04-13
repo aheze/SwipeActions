@@ -100,9 +100,6 @@ public struct SwipeContext {
 
     /// If the user is swiping or not.
     public var currentlyDragging = false
-
-    /// The ID of the swipe view, used for auto-closing.
-    public var swipeViewID = UUID()
 }
 
 /// The style to reveal actions.
@@ -555,8 +552,7 @@ extension SwipeView {
                 numberOfActions: numberOfActions.wrappedValue,
                 side: side,
                 opacity: opacity,
-                currentlyDragging: currentlyDragging,
-                swipeViewID: id
+                currentlyDragging: currentlyDragging
             )
 
             actions(context) /// Call the `actions` view and pass in context.
