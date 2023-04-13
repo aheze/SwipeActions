@@ -1,4 +1,4 @@
-<img src="Assets/Header.png" width="400" alt="SwipeActions">
+<a href="#"><img src="Assets/Header.png" width="400" alt="SwipeActions"></a>
 
 Add customizable swipe actions to any view.
 
