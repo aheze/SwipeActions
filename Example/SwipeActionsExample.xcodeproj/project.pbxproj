@@ -18,6 +18,7 @@
 		3C338E9D29E7B14C00F85B55 /* ContentView+Basic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C338E9729E7B14C00F85B55 /* ContentView+Basic.swift */; };
 		3C338EA029E7B16E00F85B55 /* SwipeActions in Frameworks */ = {isa = PBXBuildFile; productRef = 3C338E9F29E7B16E00F85B55 /* SwipeActions */; };
 		3CB7C4BA29E7BDC600D522C4 /* DebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CB7C4B929E7BDC600D522C4 /* DebugView.swift */; };
+		3CB7C4D629E8C49400D522C4 /* ContentView+Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CB7C4D529E8C49400D522C4 /* ContentView+Group.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +34,7 @@
 		3C338E9729E7B14C00F85B55 /* ContentView+Basic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ContentView+Basic.swift"; sourceTree = "<group>"; };
 		3CB7C4B829E7B1BB00D522C4 /* SwipeActions */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SwipeActions; path = ..; sourceTree = "<group>"; };
 		3CB7C4B929E7BDC600D522C4 /* DebugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugView.swift; sourceTree = "<group>"; };
+		3CB7C4D529E8C49400D522C4 /* ContentView+Group.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContentView+Group.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +76,7 @@
 				3C338E9329E7B14C00F85B55 /* ContentView+Styles.swift */,
 				3C338E9629E7B14C00F85B55 /* ContentView+Animations.swift */,
 				3C338E9429E7B14C00F85B55 /* ContentView+Advanced.swift */,
+				3CB7C4D529E8C49400D522C4 /* ContentView+Group.swift */,
 				3CB7C4B929E7BDC600D522C4 /* DebugView.swift */,
 				3C338E9229E7B14C00F85B55 /* Container.swift */,
 				3C338E8829E7B10E00F85B55 /* Assets.xcassets */,
@@ -164,6 +167,7 @@
 				3C338E9B29E7B14C00F85B55 /* ContentView+Customization.swift in Sources */,
 				3C338E9D29E7B14C00F85B55 /* ContentView+Basic.swift in Sources */,
 				3C338E9C29E7B14C00F85B55 /* ContentView+Animations.swift in Sources */,
+				3CB7C4D629E8C49400D522C4 /* ContentView+Group.swift in Sources */,
 				3C338E8529E7B10C00F85B55 /* SwipeActionsExampleApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

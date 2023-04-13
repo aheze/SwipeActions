@@ -16,6 +16,7 @@ enum DemoSectionKind: String, CaseIterable {
     case styles
     case animations
     case advanced
+    case group
 }
 
 struct ContentView: View {
@@ -112,6 +113,10 @@ struct ContentView: View {
                     VStack(spacing: 8) {
                         advanced
                     }
+                }
+
+                DemoSection(expandedSectionKinds: $expandedSectionKinds, kind: .group) {
+                    group
                 }
 
                 SwipeView {
