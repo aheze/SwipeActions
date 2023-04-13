@@ -204,9 +204,24 @@ struct ProgrammaticSwipeView: View {
 }
 ```
 
+- To enable swiping on transparent areas, add `.contentShape(Rectangle())`.
+
+```swift
+SwipeView {
+    Text("Lots of empty space here.")
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 32)
+        .contentShape(Rectangle()) /// Enable swiping on the empty space.
+} leadingActions: { _ in
+} trailingActions: { _ in
+    SwipeAction("Hello!") { }
+}
+```
+
 - Everything in the example app is swipeable — even the gray-capsule headers!
 
 <img src="Assets/ExampleAppHeaders.png" width="300" alt="The 'Styles' header swiped to the left and the 'Open' action shown on the right.">
+
 
 ### Community
 
