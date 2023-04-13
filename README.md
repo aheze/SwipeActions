@@ -52,6 +52,107 @@ struct ContentView: View {
 
 <img src="Assets/Result.png" width="300" alt="The result, 'World' displayed on the right.">
 
+
+### Examples
+
+Check out the [example app](https://github.com/aheze/SwipeActions/archive/refs/heads/main.zip) for all examples!
+
+![2 screenshots of the example app](Assets/ExampleApp.png)
+
+### Customization
+
+SwipeActions supports over 20 modifiers for customization.
+
+```swift
+// MARK: - For `SwipeAction` (the side views)
+
+/**  
+  For leading actions:
+  Apply this to the leftmost edge action to enable drag-to-trigger.
+  You must also call `swipeToTriggerLeadingEdge(true)` on the `SwipeView`.
+
+  For trailing actions:
+  Apply this to the rightmost edge action to enable drag-to-trigger.
+  You must also call `swipeToTriggerTrailingEdge(true)` on the `SwipeView`.
+*/
+func swipeActionEdgeStyling() 
+
+/// Constrain the action's content size (helpful for text).
+func swipeActionLabelFixedSize(_ value: Bool = true) 
+
+/// Additional horizontal padding.
+func swipeActionLabelHorizontalPadding(_ value: Double = 16)
+
+/// The opacity of the swipe actions, determined by `actionsVisibleStartPoint` and `actionsVisibleEndPoint`.
+func swipeActionChangeLabelVisibilityOnly(_ value: Bool) 
+```
+
+```swift
+// MARK: - For `SwipeView` (the main view)
+
+/// Enable triggering the leading edge via a drag.
+/// You must also call `swipeActionEdgeStyling()` on the leftmost edge `SwipeAction`.
+func swipeToTriggerLeadingEdge(_ value: Bool) 
+
+/// Enable triggering the trailing edge via a drag.
+/// You must also call `swipeActionEdgeStyling()` on the rightmost edge `SwipeAction`.
+func swipeToTriggerTrailingEdge(_ value: Bool) 
+
+/// The minimum distance needed to drag to start the gesture. Should be more than 0 for best compatibility with other gestures/buttons.
+func swipeMinimumDistance(_ value: Double) 
+
+/// The style to use (`mask`, `equalWidths`, or `cascade`).
+func swipeActionsStyle(_ value: SwipeActionStyle) 
+
+/// The corner radius that encompasses all actions.
+func swipeActionsMaskCornerRadius(_ value: Double) 
+
+/// At what point the actions start becoming visible.
+func swipeActionsVisibleStartPoint(_ value: Double) 
+
+/// At what point the actions become fully visible.
+func swipeActionsVisibleEndPoint(_ value: Double)
+
+/// The corner radius for each action.
+func swipeActionCornerRadius(_ value: Double) 
+
+/// The width for each action.
+func swipeActionWidth(_ value: Double) 
+
+/// Spacing between actions and the label view.
+func swipeSpacing(_ value: Double) 
+
+/// The point where the user must drag to expand actions.
+func swipeReadyToExpandPadding(_ value: Double) 
+
+/// The point where the user must drag to enter the `triggering` state.
+func swipeReadyToTriggerPadding(_ value: Double) 
+
+/// Ensure that the user must drag a significant amount to trigger the edge action, even if the actions' total width is small.
+func swipeMinimumPointToTrigger(_ value: Double) 
+
+/// Applies if `swipeToTriggerLeadingEdge/swipeToTriggerTrailingEdge` is true.
+func swipeEnableTriggerHaptics(_ value: Bool) 
+
+/// Applies if `swipeToTriggerLeadingEdge/swipeToTriggerTrailingEdge` is false, or when there's no actions on one side.
+func swipeStretchRubberBandingPower(_ value: Double)
+
+/// If true, you can change from the leading to the trailing actions in one single swipe.
+func swipeAllowSingleSwipeAcross(_ value: Bool) 
+
+/// The animation used for adjusting the content's view when it's triggered.
+func swipeActionContentTriggerAnimation(_ value: Animation)
+
+/// Values for controlling the close animation.
+func swipeOffsetCloseAnimation(stiffness: Double, damping: Double)
+
+/// Values for controlling the expand animation.
+func swipeOffsetExpandAnimation(stiffness: Double, damping: Double)
+
+/// Values for controlling the trigger animation.
+func swipeOffsetTriggerAnimation(stiffness: Double, damping: Double)
+```
+
 ### Community
 
 Author | Contributing | Need Help?
@@ -87,3 +188,4 @@ SOFTWARE.
 ---
 
 https://user-images.githubusercontent.com/49819455/231671743-baca394e-fc74-4062-83eb-2024b8add924.mp4
+
