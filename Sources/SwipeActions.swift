@@ -454,9 +454,10 @@ extension SwipeView {
             } set: { newValue in
                 state.wrappedValue = newValue
 
-                /// Set the current side to the action's side if necessary.
-                if newValue != .closed {
-                    currentSide = side
+                if newValue == .closed {
+                    currentSide = nil /// If closed, set `currentSide` to nil.
+                } else {
+                    currentSide = side /// Set the current side to the action's side.
                 }
 
                 /// Update the visual state to the client's new selection.
@@ -1254,44 +1255,4 @@ extension View {
 struct ContentSizeReaderPreferenceKey: PreferenceKey {
     static var defaultValue: CGSize { return CGSize() }
     static func reduce(value: inout CGSize, nextValue: () -> CGSize) { value = nextValue() }
-}
-
-public extension SwipeView {
-    func swipeSelection<Tag: Equatable>(selectedTag: Binding<Tag?>, tag: Tag) -> some View {
-        onAppear {
-            print("appeared!")
-        }
-        .onChange(of: currentlyDragging) { newValue in
-            print("changed \(newValue)")
-            if newValue {
-                selectedTag.wrappedValue = tag
-            }
-        }
-        .onChange(of: leadingState) { newValue in
-            print("newValue: \(newValue)")
-            if newValue == .closed, selectedTag.wrappedValue == tag {
-                selectedTag.wrappedValue = nil
-            }
-        }
-        .onChange(of: trailingState) { newValue in
-            if newValue == .closed, selectedTag.wrappedValue == tag {
-                selectedTag.wrappedValue = nil
-            }
-        }
-        .onChange(of: selectedTag.wrappedValue) { newValue in
-            if selectedTag.wrappedValue != tag {
-                if leadingState != .closed {
-                    currentSide = nil
-                    leadingState = .closed
-                    close(velocity: 0)
-                }
-                if trailingState != .closed {
-                    currentSide = nil
-                    trailingState = .closed
-                    close(velocity: 0)
-                }
-            }
-        }
-        .border(.red)
-    }
 }
