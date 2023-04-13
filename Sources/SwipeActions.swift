@@ -189,11 +189,11 @@ public extension EnvironmentValues {
 
 // MARK: - Action view
 
-/// A view to wrap buttons in, for use in either the `leading` or `trailing` side.
+/// For use in `SwipeView`'s `leading` or `trailing` side.
 public struct SwipeAction<Label: View, Background: View>: View {
     // MARK: - Properties
 
-    /// For trigger-by-drag.
+    /// Set to true to enable drag-to-trigger on the edge action.
     public var isSwipeEdge = false
 
     /// Constrain the action's content size (helpful for text).
@@ -216,10 +216,13 @@ public struct SwipeAction<Label: View, Background: View>: View {
 
     // MARK: - Internal state
 
+    /// Read the `swipeContext` from the parent `SwipeView`.
     @Environment(\.swipeContext) var swipeContext
 
+    /// Keeps track of whether the action is pressed/triggered or not.
     @State var highlighted = false
 
+    /// For use in `SwipeView`'s `leading` or `trailing` side.
     public init(
         action: @escaping () -> Void,
         @ViewBuilder label: @escaping (Bool) -> Label,
@@ -231,7 +234,8 @@ public struct SwipeAction<Label: View, Background: View>: View {
     }
 
     public var body: some View {
-        let alignment: Alignment = {
+        /// Usually `.center`, but if there's only one action and it's triggered, move it closer to the center.
+        let labelAlignment: Alignment = {
             guard isSwipeEdge else { return .center }
             if swipeContext.numberOfActions == 1 {
                 if swipeContext.state == .triggering || swipeContext.state == .triggered {
@@ -252,7 +256,7 @@ public struct SwipeAction<Label: View, Background: View>: View {
         Button(action: action) {
             background(highlighted)
                 .overlay(
-                    label(highlighted)
+                    label(labelAlignment)
                         .opacity(labelOpacity)
                         .fixedSize(horizontal: labelFixedSize, vertical: labelFixedSize)
                         .padding(.horizontal, labelHorizontalPadding),
@@ -264,8 +268,9 @@ public struct SwipeAction<Label: View, Background: View>: View {
             self.highlighted = pressing
         } perform: {}
         .buttonStyle(SwipeActionButtonStyle())
-        .onChange(of: swipeContext.state) { state in
+        .onChange(of: swipeContext.state) { state in /// Read changes in state.
             guard isSwipeEdge else { return }
+
             if let state {
                 if state == .triggering || state == .triggered {
                     highlighted = true
@@ -285,22 +290,29 @@ public struct SwipeAction<Label: View, Background: View>: View {
 
 // MARK: - Main view
 
-/**
- A view for adding swipe actions.
- */
+/// A view for adding swipe actions.
 public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Label: View, LeadingActions: View, TrailingActions: View {
     // MARK: - Properties
 
+    /// Options for configuring the swipe view.
     public var options = SwipeOptions()
+
     @ViewBuilder public var label: () -> Label
     @ViewBuilder public var leadingActions: (Binding<SwipeContext>) -> LeadingActions
     @ViewBuilder public var trailingActions: (Binding<SwipeContext>) -> TrailingActions
 
     // MARK: - Internal state
 
+    /// The current side that's showing the actions.
     @State var currentSide: SwipeSide?
+
+    /// The `closed/expanded/triggering/triggered/none` state for the leading side.
     @State var leadingState: SwipeState?
+
+    /// The `closed/expanded/triggering/triggered/none` state for the trailing side.
     @State var trailingState: SwipeState?
+
+    /// These properties are set automatically via `SwipeActionsLayout`.
     @State var numberOfLeadingActions = 0
     @State var numberOfTrailingActions = 0
 
@@ -312,10 +324,17 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
 
     /// The gesture's current velocity.
     @GestureVelocity var velocity: CGVector
+
+    /// The offset dragged in the current drag session.
     @State var currentOffset = Double(0)
+
+    /// The offset dragged in previous drag sessions.
     @State var savedOffset = Double(0)
+
+    /// The size of the parent view.
     @State var size = CGSize.zero
 
+    /// A view for adding swipe actions.
     public init(
         @ViewBuilder label: @escaping () -> Label,
         @ViewBuilder leadingActions: @escaping (Binding<SwipeContext>) -> LeadingActions,
@@ -329,24 +348,24 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
     public var body: some View {
         HStack {
             label()
-                .offset(x: offset)
+                .offset(x: offset) /// Apply the offset here.
         }
-        .readSize { size = $0 }
-        .background(
+        .readSize { size = $0 } /// Read the size of the parent label.
+        .background( /// Leading swipe actions.
             actionsView(side: .leading, state: $leadingState, numberOfActions: $numberOfLeadingActions) { context in
                 leadingActions(context)
                     .environment(\.swipeContext, context.wrappedValue)
             },
             alignment: .leading
         )
-        .background(
+        .background( /// Trailing swipe actions.
             actionsView(side: .trailing, state: $trailingState, numberOfActions: $numberOfTrailingActions) { context in
                 trailingActions(context)
                     .environment(\.swipeContext, context.wrappedValue)
             },
             alignment: .trailing
         )
-        .highPriorityGesture(
+        .highPriorityGesture( /// Add the drag gesture.
             DragGesture(minimumDistance: options.swipeMinimumDistance)
                 .updating($currentlyDragging) { value, state, transaction in
                     state = true
@@ -355,22 +374,20 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
                 .onEnded(onEnded)
                 .updatingVelocity($velocity)
         )
-        .onChange(of: currentlyDragging) { currentlyDragging in
+        .onChange(of: currentlyDragging) { currentlyDragging in /// Detect gesture cancellations.
             if !currentlyDragging, let latestDragGestureValueBackup {
                 /// Gesture cancelled.
-
                 let velocity = velocity.dx / currentOffset
                 end(value: latestDragGestureValueBackup, velocity: velocity)
             }
         }
-
         .onChange(of: leadingState) { [leadingState] newValue in
             /// Make sure the change was from `triggering` to `nil`, or the other way around.
             let changed =
                 leadingState == .triggering && newValue == nil ||
                 leadingState == nil && newValue == .triggering
 
-            if changed, options.enableTriggerHaptics {
+            if changed, options.enableTriggerHaptics { /// Generate haptic feedback if necessary.
                 let generator = UIImpactFeedbackGenerator(style: .rigid)
                 generator.impactOccurred()
             }
@@ -392,6 +409,7 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
 // MARK: - Actions view
 
 extension SwipeView {
+    /// The swipe actions.
     @ViewBuilder func actionsView<Actions: View>(
         side: SwipeSide,
         state: Binding<SwipeState?>,
@@ -438,15 +456,17 @@ extension SwipeView {
             } set: { newValue in
                 state.wrappedValue = newValue.state
                 currentSide = side
+
+                /// Update the visual state to the client's new selection.
                 update(side: side, to: newValue.state)
             }
 
-            actions(context)
+            actions(context) /// Call the `actions` view and pass in context.
         }
         .mask(
             Color.clear.overlay(
-                /// Make the mask's corner radius a bit smaller.
-                RoundedRectangle(cornerRadius: options.actionsMaskCornerRadius / 2, style: .continuous)
+                /// Clip the swipe actions as they're being revealed.
+                RoundedRectangle(cornerRadius: options.actionsMaskCornerRadius, style: .continuous)
                     .frame(width: visibleWidth),
                 alignment: side.alignment
             )
@@ -465,7 +485,8 @@ struct SwipeActionsLayout: _VariadicView_UnaryViewRoot {
 
     @ViewBuilder
     public func body(children: _VariadicView.Children) -> some View {
-        let edge: AnyHashable? = {
+        /// The ID of the edge action.
+        let edgeID: AnyHashable? = {
             switch side {
             case .leading:
                 return children.first?.id
@@ -476,7 +497,7 @@ struct SwipeActionsLayout: _VariadicView_UnaryViewRoot {
 
         HStack(spacing: options.spacing) {
             ForEach(Array(zip(children.indices, children)), id: \.1.id) { index, child in
-                let isEdge = child.id == edge
+                let isEdge = child.id == edgeID
 
                 let shown: Bool = {
                     if state == .triggering || state == .triggered {
@@ -557,7 +578,7 @@ struct SwipeActionsLayout: _VariadicView_UnaryViewRoot {
         }
         .frame(width: options.actionsStyle == .cascade ? visibleWidth : nil)
         .animation(options.actionContentTriggerAnimation, value: state)
-        .onAppear {
+        .onAppear { /// Set the number of actions here.
             numberOfActions = children.count
         }
         .onChange(of: children.count) { count in
@@ -710,7 +731,7 @@ extension SwipeView {
 
 extension SwipeView {
     func onChanged(value: DragGesture.Value) {
-        /// Backup the value.
+        /// Back up the value.
         latestDragGestureValueBackup = value
 
         /// Set the current side.
@@ -791,6 +812,7 @@ extension SwipeView {
         end(value: value, velocity: velocity)
     }
 
+    /// Represents the end of a gesture.
     func end(value: DragGesture.Value, velocity: CGFloat) {
         let totalOffset = savedOffset + value.translation.width
         let totalPredictedOffset = (savedOffset + value.predictedEndTranslation.width) * 0.5
