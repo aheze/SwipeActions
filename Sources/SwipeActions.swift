@@ -87,7 +87,7 @@ public enum SwipeSide {
 /// Context for the swipe action.
 public struct SwipeContext {
     /// The current state.
-    public var state: SwipeState?
+    public var state: Binding<SwipeState?>
 
     /// How many actions are provided.
     public var numberOfActions = 0
@@ -177,7 +177,7 @@ public struct SwipeOptions {
 // MARK: - Environment
 
 public struct SwipeContextKey: EnvironmentKey {
-    public static let defaultValue = SwipeContext(side: .leading)
+    public static let defaultValue = SwipeContext(state: .constant(nil), side: .leading)
 }
 
 public extension EnvironmentValues {
@@ -238,7 +238,7 @@ public struct SwipeAction<Label: View, Background: View>: View {
         let labelAlignment: Alignment = {
             guard isSwipeEdge else { return .center }
             if swipeContext.numberOfActions == 1 {
-                if swipeContext.state == .triggering || swipeContext.state == .triggered {
+                if swipeContext.state.wrappedValue == .triggering || swipeContext.state.wrappedValue == .triggered {
                     return swipeContext.side.edgeTriggerAlignment
                 }
             }
@@ -268,7 +268,7 @@ public struct SwipeAction<Label: View, Background: View>: View {
             self.highlighted = pressing
         } perform: {}
         .buttonStyle(SwipeActionButtonStyle())
-        .onChange(of: swipeContext.state) { state in /// Read changes in state.
+        .onChange(of: swipeContext.state.wrappedValue) { state in /// Read changes in state.
             guard isSwipeEdge else { return }
 
             if let state {
@@ -298,8 +298,8 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
     public var options = SwipeOptions()
 
     @ViewBuilder public var label: () -> Label
-    @ViewBuilder public var leadingActions: (Binding<SwipeContext>) -> LeadingActions
-    @ViewBuilder public var trailingActions: (Binding<SwipeContext>) -> TrailingActions
+    @ViewBuilder public var leadingActions: (SwipeContext) -> LeadingActions
+    @ViewBuilder public var trailingActions: (SwipeContext) -> TrailingActions
 
     // MARK: - Internal state
 
@@ -337,8 +337,8 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
     /// A view for adding swipe actions.
     public init(
         @ViewBuilder label: @escaping () -> Label,
-        @ViewBuilder leadingActions: @escaping (Binding<SwipeContext>) -> LeadingActions,
-        @ViewBuilder trailingActions: @escaping (Binding<SwipeContext>) -> TrailingActions
+        @ViewBuilder leadingActions: @escaping (SwipeContext) -> LeadingActions,
+        @ViewBuilder trailingActions: @escaping (SwipeContext) -> TrailingActions
     ) {
         self.label = label
         self.leadingActions = leadingActions
@@ -354,14 +354,14 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
         .background( /// Leading swipe actions.
             actionsView(side: .leading, state: $leadingState, numberOfActions: $numberOfLeadingActions) { context in
                 leadingActions(context)
-                    .environment(\.swipeContext, context.wrappedValue)
+                    .environment(\.swipeContext, context)
             },
             alignment: .leading
         )
         .background( /// Trailing swipe actions.
             actionsView(side: .trailing, state: $trailingState, numberOfActions: $numberOfTrailingActions) { context in
                 trailingActions(context)
-                    .environment(\.swipeContext, context.wrappedValue)
+                    .environment(\.swipeContext, context)
             },
             alignment: .trailing
         )
@@ -414,7 +414,7 @@ extension SwipeView {
         side: SwipeSide,
         state: Binding<SwipeState?>,
         numberOfActions: Binding<Int>,
-        @ViewBuilder actions: (Binding<SwipeContext>) -> Actions
+        @ViewBuilder actions: (SwipeContext) -> Actions
     ) -> some View {
         let draggedLength = offset * Double(side.signWhenDragged) /// Flip the offset if necessary.
         let visibleWidth: Double = {
@@ -446,20 +446,22 @@ extension SwipeView {
                 visibleWidth: visibleWidth
             )
         ) {
-            let context = Binding {
-                SwipeContext(
-                    state: state.wrappedValue,
-                    numberOfActions: numberOfActions.wrappedValue,
-                    side: side,
-                    opacity: opacity
-                )
+            let stateBinding = Binding {
+                state.wrappedValue
             } set: { newValue in
-                state.wrappedValue = newValue.state
+                state.wrappedValue = newValue
                 currentSide = side
 
                 /// Update the visual state to the client's new selection.
-                update(side: side, to: newValue.state)
+                update(side: side, to: newValue)
             }
+
+            let context = SwipeContext(
+                state: stateBinding,
+                numberOfActions: numberOfActions.wrappedValue,
+                side: side,
+                opacity: opacity
+            )
 
             actions(context) /// Call the `actions` view and pass in context.
         }

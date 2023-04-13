@@ -103,10 +103,10 @@ struct TapToOpenView: View {
         } leadingActions: { _ in
         } trailingActions: { context in
             SwipeAction("Tap to Close!") {
-                context.wrappedValue.state = .closed
+                context.state.wrappedValue = .closed
             }
             .onReceive(open) { _ in
-                context.wrappedValue.state = .expanded
+                context.state.wrappedValue = .expanded
             }
         }
         .swipeActionWidth(180)
