@@ -1030,6 +1030,8 @@ public struct SwipeDeleteMaskShape: Shape {
 
 /// A style to remove the "press" effect on buttons.
 public struct SwipeActionButtonStyle: ButtonStyle {
+    public init() {}
+    
     public func makeBody(configuration: Configuration) -> some View {
         return configuration.label
     }
