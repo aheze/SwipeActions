@@ -35,21 +35,22 @@ struct RowSwipeView: View {
                 .cornerRadius(32)
         } leadingActions: { _ in
             SwipeAction("Leading") {}
-                .swipeSelection(selectedTag: $selectedTag, tag: tag)
+//                .swipeSelection(selectedTag: $selectedTag, tag: tag)
         } trailingActions: { context in
             SwipeAction("Trailing") {}
-                .swipeSelection(selectedTag: $selectedTag, tag: tag)
+//                .swipeSelection(selectedTag: $selectedTag, tag: tag)
         }
+        .swipeSelection(selectedTag: $selectedTag, tag: tag)
     }
 }
 
-extension View {
-    func swipeSelection<Tag: Equatable>(selectedTag: Binding<Tag?>, tag: Tag) -> some View {
-        modifier(
-            SwipeSelectionModifier(selectedTag: selectedTag, tag: tag)
-        )
-    }
-}
+//extension View {
+//    func swipeSelection<Tag: Equatable>(selectedTag: Binding<Tag?>, tag: Tag) -> some View {
+//        modifier(
+//            SwipeSelectionModifier(selectedTag: selectedTag, tag: tag)
+//        )
+//    }
+//}
 
 struct SwipeSelectionModifier<Tag: Equatable>: ViewModifier {
     @Binding var selectedTag: Tag?
