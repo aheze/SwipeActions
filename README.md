@@ -7,6 +7,7 @@ Add customizable swipe actions to any view.
 - Supports drag-to-delete and advanced gesture handling.
 - Fine-tune animations and styling to your taste.
 - Programmatically show/hide swipe actions.
+- Automatically close when interacting with other views.
 - Made with 100% SwiftUI. Supports iOS 14+.
 - Lightweight, no dependencies. One file.
 
