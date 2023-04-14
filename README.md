@@ -172,11 +172,11 @@ Example usage of these modifiers is available in the [example app](https://githu
 - To automatically close swipe views when another one is swiped (accordion style), use `SwipeViewGroup`.
 
 ```swift
- SwipeViewGroup {
-     SwipeView {} /// Only one of the actions will be shown.
-     SwipeView {}
-     SwipeView {}
- }
+SwipeViewGroup {
+    SwipeView {} /// Only one of the actions will be shown.
+    SwipeView {}
+    SwipeView {}
+}
 ```
 
 - To programmatically show/hide actions, use the `context` parameter.
