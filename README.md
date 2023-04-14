@@ -169,6 +169,16 @@ Example usage of these modifiers is available in the [example app](https://githu
 
 ### Notes
 
+- To automatically close swipe views when another one is swiped (accordion style), use `SwipeViewGroup`.
+
+```swift
+ SwipeViewGroup {
+     SwipeView {} /// Only one of the actions will be shown.
+     SwipeView {}
+     SwipeView {}
+ }
+```
+
 - To programmatically show/hide actions, use the `context` parameter.
 
 ```swift
@@ -213,16 +223,6 @@ SwipeView {
 } trailingActions: { _ in
     SwipeAction("Hello!") { }
 }
-```
-
-- To automatically close swipe views when another one is swiped (accordion style), use `SwipeViewGroup`.
-
-```swift
- SwipeViewGroup {
-     SwipeView {} /// Only one of the actions will be shown.
-     SwipeView {}
-     SwipeView {}
- }
 ```
 
 - Everything in the example app is swipeable — even the gray-capsule headers!
