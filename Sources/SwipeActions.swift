@@ -116,6 +116,9 @@ public enum SwipeActionStyle {
 
 /// Options for configuring the swipe view.
 public struct SwipeOptions {
+    /// If swiping is currently enabled.
+    var swipeEnabled = true
+
     /// The minimum distance needed to drag to start the gesture. Should be more than 0 for best compatibility with other gestures/buttons.
     var swipeMinimumDistance = Double(2)
 
@@ -439,7 +442,8 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
                 }
                 .onChanged(onChanged)
                 .onEnded(onEnded)
-                .updatingVelocity($velocity)
+                .updatingVelocity($velocity),
+            including: options.swipeEnabled ? .all : .subviews /// Enable/disable swiping here.
         )
         .onChange(of: currentlyDragging) { currentlyDragging in /// Detect gesture cancellations.
             if !currentlyDragging, let latestDragGestureValueBackup {
@@ -853,8 +857,16 @@ extension SwipeView {
             } else {
                 currentSide = .trailing
             }
-        }
 
+            withAnimation(.spring(response: 0.3, dampingFraction: 1, blendDuration: 1)) {
+                change(value: value)
+            }
+        } else {
+            change(value: value)
+        }
+    }
+
+    func change(value: DragGesture.Value) {
         /// The total offset of the swipe view.
         let totalOffset = savedOffset + value.translation.width
 
@@ -1097,6 +1109,13 @@ public extension SwipeAction {
 }
 
 public extension SwipeView {
+    /// If swiping is currently enabled.
+    func swipeEnabled(_ value: Bool) -> SwipeView {
+        var view = self
+        view.options.swipeEnabled = value
+        return view
+    }
+
     /// The minimum distance needed to drag to start the gesture. Should be more than 0 for best compatibility with other gestures/buttons.
     func swipeMinimumDistance(_ value: Double) -> SwipeView {
         var view = self
