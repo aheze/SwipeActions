@@ -7,6 +7,7 @@ Add customizable swipe actions to any view.
 - Supports drag-to-delete and advanced gesture handling.
 - Fine-tune animations and styling to your taste.
 - Programmatically show/hide swipe actions.
+- Automatically close when interacting with other views.
 - Made with 100% SwiftUI. Supports iOS 14+.
 - Lightweight, no dependencies. One file.
 
@@ -172,11 +173,11 @@ Example usage of these modifiers is available in the [example app](https://githu
 - To automatically close swipe views when another one is swiped (accordion style), use `SwipeViewGroup`.
 
 ```swift
- SwipeViewGroup {
-     SwipeView {} /// Only one of the actions will be shown.
-     SwipeView {}
-     SwipeView {}
- }
+SwipeViewGroup {
+    SwipeView {} /// Only one of the actions will be shown.
+    SwipeView {}
+    SwipeView {}
+}
 ```
 
 - To programmatically show/hide actions, use the `context` parameter.
