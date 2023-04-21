@@ -76,5 +76,19 @@ extension ContentView {
                 .allowSwipeToTrigger()
             }
         }
+
+        SwipeView {
+            Text("Swipe to Trigger, Then Return")
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 32)
+                .background(Color.blue.opacity(0.1))
+                .cornerRadius(32)
+        } trailingActions: { context in
+            SwipeAction("Bounce Back") {
+                context.state.wrappedValue = .closed
+            }
+            .allowSwipeToTrigger()
+        }
+        .swipeActionWidth(140)
     }
 }
