@@ -203,10 +203,10 @@ struct ProgrammaticSwipeView: View {
             }
         } trailingActions: { context in
             SwipeAction("Tap to Close") {
-                context.wrappedValue.state = .closed
+                context.state.wrappedValue = .closed
             }
             .onReceive(open) { _ in /// Receive the `PassthroughSubject`.
-                context.wrappedValue.state = .expanded
+                context.state.wrappedValue = .expanded
             }
         }
     }
