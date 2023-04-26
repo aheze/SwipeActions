@@ -32,7 +32,7 @@
 		3C338E9529E7B14C00F85B55 /* ContentView+Customization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ContentView+Customization.swift"; sourceTree = "<group>"; };
 		3C338E9629E7B14C00F85B55 /* ContentView+Animations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ContentView+Animations.swift"; sourceTree = "<group>"; };
 		3C338E9729E7B14C00F85B55 /* ContentView+Basic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ContentView+Basic.swift"; sourceTree = "<group>"; };
-		3C6B595C29F3029C00D51AEE /* SwipeActions */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SwipeActions; path = ..; sourceTree = "<group>"; };
+		3C67AF2D29F9957100BB37A8 /* SwipeActions */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SwipeActions; path = ..; sourceTree = "<group>"; };
 		3CB7C4B929E7BDC600D522C4 /* DebugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugView.swift; sourceTree = "<group>"; };
 		3CB7C4D529E8C49400D522C4 /* ContentView+Group.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContentView+Group.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -52,7 +52,7 @@
 		3C338E7829E7B10C00F85B55 = {
 			isa = PBXGroup;
 			children = (
-				3C6B595C29F3029C00D51AEE /* SwipeActions */,
+				3C67AF2D29F9957100BB37A8 /* SwipeActions */,
 				3C338E8329E7B10C00F85B55 /* SwipeActionsExample */,
 				3C338E8229E7B10C00F85B55 /* Products */,
 			);

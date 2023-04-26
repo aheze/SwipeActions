@@ -164,6 +164,9 @@ public struct SwipeOptions {
     /// The animation used for adjusting the content's view when it's triggered.
     var actionContentTriggerAnimation = Animation.spring(response: 0.2, dampingFraction: 1, blendDuration: 1)
 
+    /// The animation used at the start of the gesture, after dragging the `swipeMinimumDistance`.
+    var swipeMinimumDistanceAnimation = Animation.spring(response: 0.3, dampingFraction: 1, blendDuration: 1)
+
     /// Values for controlling the close animation.
     var offsetCloseAnimationStiffness = Double(160), offsetCloseAnimationDamping = Double(70)
 
@@ -858,7 +861,8 @@ extension SwipeView {
                 currentSide = .trailing
             }
 
-            withAnimation(.spring(response: 0.3, dampingFraction: 1, blendDuration: 1)) {
+            /// The gesture just started, so animate the change (in case `swipeMinimumDistance > 0`).
+            withAnimation(options.swipeMinimumDistanceAnimation) {
                 change(value: value)
             }
         } else {
@@ -1218,6 +1222,13 @@ public extension SwipeView {
     func swipeActionContentTriggerAnimation(_ value: Animation) -> SwipeView {
         var view = self
         view.options.actionContentTriggerAnimation = value
+        return view
+    }
+
+    /// The animation used at the start of the gesture, after dragging the `swipeMinimumDistance`.
+    func swipeMinimumDistanceAnimation(_ value: Animation) -> SwipeView {
+        var view = self
+        view.options.swipeMinimumDistanceAnimation = value
         return view
     }
 
