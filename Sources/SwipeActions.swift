@@ -166,6 +166,7 @@ public struct SwipeOptions {
 
     /// The animation used at the start of the gesture, after dragging the `swipeMinimumDistance`.
 //    var swipeMinimumDistanceAnimation = Animation.spring(response: 0.3, dampingFraction: 1, blendDuration: 1)
+//    var asd = ""
 
     /// Values for controlling the close animation.
     var offsetCloseAnimationStiffness = Double(160), offsetCloseAnimationDamping = Double(70)
@@ -438,20 +439,16 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
 
         // MARK: - Add gestures
 
-//        .overlay(
-//            Color.clear
-//                .contentShape(Rectangle())
-                .highPriorityGesture( /// Add the drag gesture.
-                    DragGesture(minimumDistance: options.swipeMinimumDistance)
-                        .updating($currentlyDragging) { value, state, transaction in
-                            state = true
-                        }
-                        .onChanged(onChanged)
-                        .onEnded(onEnded)
-                        .updatingVelocity($velocity),
-                    including: options.swipeEnabled ? .all : .subviews /// Enable/disable swiping here.
-                )
-//        )
+        .highPriorityGesture( /// Add the drag gesture.
+            DragGesture(minimumDistance: options.swipeMinimumDistance)
+                .updating($currentlyDragging) { value, state, transaction in
+                    state = true
+                }
+                .onChanged(onChanged)
+                .onEnded(onEnded)
+                .updatingVelocity($velocity),
+            including: options.swipeEnabled ? .all : .subviews /// Enable/disable swiping here.
+        )
         .onChange(of: currentlyDragging) { currentlyDragging in /// Detect gesture cancellations.
             if !currentlyDragging, let latestDragGestureValueBackup {
                 /// Gesture cancelled.
