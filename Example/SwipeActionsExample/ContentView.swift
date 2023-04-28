@@ -139,7 +139,7 @@ struct ContentView: View {
                                     .font(.system(.body, design: .monospaced).weight(.semibold))
                             }
                             .multilineTextAlignment(.center)
-                            .accentColor(.primary)
+                            .accent(.primary)
                             .padding(.top, 20)
                             .transition(.scale(scale: 0.8).combined(with: .opacity))
                         }
