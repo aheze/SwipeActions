@@ -190,7 +190,7 @@ struct ContentView: View {
                     }
                 } label: {
                     Image(systemName: shouldExpandAll ? "arrow.up.backward.and.arrow.down.forward" : "arrow.down.forward.and.arrow.up.backward")
-                        .animation(nil)
+                        .noAnimation()
                 }
             }
         }
