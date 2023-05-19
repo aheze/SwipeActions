@@ -418,7 +418,7 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
 
         // MARK: - Add accessibility
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(Text("Swip action view"))
+        .accessibilityLabel(Text("Swipe action view"))
         .accessibilityHint(Text("Swipe right or left to reveal actions"))
         
         .background( /// Leading swipe actions.
