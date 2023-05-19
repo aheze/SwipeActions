@@ -409,7 +409,7 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
         HStack {
             label()
                 .offset(x: offset) /// Apply the offset here.
-                .accessibilityElement() // Group the main label content as a single accessibility element
+                .accessibilityElement(children: .combine) // Group the main label content as a single accessibility element
         }
         .readSize { size = $0 } /// Read the size of the parent label.
         .background( /// Leading swipe actions.
@@ -423,11 +423,16 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
                             swipeToTriggerLeadingEdge = allow
                         }
                     }
-                    .accessibilityLabel(Text("Leading Actions")) // Label for the leading actions.
-                    .accessibilityHint(Text("Swipe left to access additional options")) // Hint for VoiceOver users indicating the swipe gesture direction.
-            },
+                    .accessibilityElement()
+                    .accessibility(addTraits: leadingState == .expanded ? .isButton : []) // Add traits only when the leading actions are closed
+                    .accessibilityLabel(Text("Leading action")) // Label for the leading actions.
+                    .accessibilityHint(Text("Action on the leading side of the swipe action view")) // Hint for VoiceOver users indicating the action direction.
+            }
+            .accessibilityHidden(leadingState == .closed) // Hide accessibility when the leading actions are closed
+            ,
             alignment: .leading
         )
+        
         .background( /// Trailing swipe actions.
             actionsView(side: .trailing, state: $trailingState, numberOfActions: $numberOfTrailingActions) { context in
                 trailingActions(context)
@@ -437,12 +442,16 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
                             swipeToTriggerTrailingEdge = allow
                         }
                     }
-                    .accessibilityLabel(Text("Trailing Actions")) // Label for the trailing actions.
-                    .accessibilityHint(Text("Swipe right access additional options")) // Hint for VoiceOver users indicating the swipe gesture direction.
-            },
+                    .accessibilityElement()
+                    .accessibility(addTraits: trailingState == .expanded ? .isButton : []) // Add traits only when the trailing actions are open
+                    .accessibilityLabel(Text("Trailing action")) // Label for the trailing actions.
+                    .accessibilityHint(Text("Action on the trailing side of the swipe action view")) // Hint for VoiceOver users indicating the action direction.
+            }
+            .accessibilityHidden(trailingState == .closed) // Hide accessibility when the trailing actions are closed
+            ,
             alignment: .trailing
         )
-
+        
         // MARK: - Add gestures
 
         .highPriorityGesture( /// Add the drag gesture.
@@ -455,13 +464,6 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
                 .updatingVelocity($velocity),
             including: options.swipeEnabled ? .all : .subviews /// Enable/disable swiping here.
         )
-        
-        // MARK: - Add VoiceOver accessibility
-        
-        .accessibilityAddTraits(.isButton) /// Indicate that this is an interactive element
-        .accessibilityElement(children: .ignore) // Ignore the child elements for grouping
-        .accessibilityLabel(Text("Swipe Action View")) // Label for the entire swipe view
-        .accessibilityHint(Text("Swipe left or right to reveal actions"))
         
         .onChange(of: currentlyDragging) { currentlyDragging in /// Detect gesture cancellations.
             if !currentlyDragging, let latestDragGestureValueBackup {
