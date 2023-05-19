@@ -30,6 +30,7 @@
  */
 
 import SwiftUI
+import Accessibility
 
 // MARK: - Structures
 
@@ -346,7 +347,7 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
 
     /// Read the `swipeViewGroupSelection` from the parent `SwipeViewGroup` (if it exists).
     @Environment(\.swipeViewGroupSelection) var swipeViewGroupSelection
-
+    
     // MARK: - Internal state
 
     /// The ID of the view. Set `options.id` to override this.
@@ -408,6 +409,7 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
         HStack {
             label()
                 .offset(x: offset) /// Apply the offset here.
+                .accessibilityElement() // Group the main label content as a single accessibility element
         }
         .readSize { size = $0 } /// Read the size of the parent label.
         .background( /// Leading swipe actions.
@@ -421,6 +423,8 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
                             swipeToTriggerLeadingEdge = allow
                         }
                     }
+                    .accessibilityLabel(Text("Leading Actions")) // Label for the leading actions.
+                    .accessibilityHint(Text("Swipe left to access additional options")) // Hint for VoiceOver users indicating the swipe gesture direction.
             },
             alignment: .leading
         )
@@ -433,6 +437,8 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
                             swipeToTriggerTrailingEdge = allow
                         }
                     }
+                    .accessibilityLabel(Text("Trailing Actions")) // Label for the trailing actions.
+                    .accessibilityHint(Text("Swipe right access additional options")) // Hint for VoiceOver users indicating the swipe gesture direction.
             },
             alignment: .trailing
         )
@@ -449,6 +455,14 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
                 .updatingVelocity($velocity),
             including: options.swipeEnabled ? .all : .subviews /// Enable/disable swiping here.
         )
+        
+        // MARK: - Add VoiceOver accessibility
+        
+        .accessibilityAddTraits(.isButton) /// Indicate that this is an interactive element
+        .accessibilityElement(children: .ignore) // Ignore the child elements for grouping
+        .accessibilityLabel(Text("Swipe Action View")) // Label for the entire swipe view
+        .accessibilityHint(Text("Swipe left or right to reveal actions"))
+        
         .onChange(of: currentlyDragging) { currentlyDragging in /// Detect gesture cancellations.
             if !currentlyDragging, let latestDragGestureValueBackup {
                 /// Gesture cancelled.
