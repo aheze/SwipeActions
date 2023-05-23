@@ -30,6 +30,7 @@
  */
 
 import SwiftUI
+import Accessibility
 
 // MARK: - Structures
 
@@ -299,7 +300,10 @@ public struct SwipeAction<Label: View, Background: View>: View {
                     label(highlighted)
                         .opacity(labelOpacity)
                         .fixedSize(horizontal: labelFixedSize, vertical: labelFixedSize)
-                        .padding(.horizontal, labelHorizontalPadding),
+                        .padding(.horizontal, labelHorizontalPadding)
+                        .accessibilityElement(children: .combine) // Mark the entire SwipeAction as an accessibility element
+                        .accessibility(addTraits: highlighted ? .isSelected : []) // Add the selected trait when the action is highlighted
+                    ,
                     alignment: labelAlignment
                 )
         }
@@ -346,7 +350,7 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
 
     /// Read the `swipeViewGroupSelection` from the parent `SwipeViewGroup` (if it exists).
     @Environment(\.swipeViewGroupSelection) var swipeViewGroupSelection
-
+    
     // MARK: - Internal state
 
     /// The ID of the view. Set `options.id` to override this.
@@ -408,8 +412,15 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
         HStack {
             label()
                 .offset(x: offset) /// Apply the offset here.
+                .accessibilityElement(children: .combine) // Group the main label content as a single accessibility element
         }
         .readSize { size = $0 } /// Read the size of the parent label.
+
+        // MARK: - Add accessibility
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(Text("Swipe action view"))
+        .accessibilityHint(Text("Swipe right or left to reveal actions"))
+        
         .background( /// Leading swipe actions.
             actionsView(side: .leading, state: $leadingState, numberOfActions: $numberOfLeadingActions) { context in
                 leadingActions(context)
@@ -421,9 +432,12 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
                             swipeToTriggerLeadingEdge = allow
                         }
                     }
-            },
+            }
+            .accessibilityHidden(leadingState == .closed) // Hide accessibility when the leading actions are closed
+            ,
             alignment: .leading
         )
+        
         .background( /// Trailing swipe actions.
             actionsView(side: .trailing, state: $trailingState, numberOfActions: $numberOfTrailingActions) { context in
                 trailingActions(context)
@@ -433,10 +447,12 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
                             swipeToTriggerTrailingEdge = allow
                         }
                     }
-            },
+            }
+            .accessibilityHidden(trailingState == .closed) // Hide accessibility when the trailing actions are closed
+            ,
             alignment: .trailing
         )
-
+        
         // MARK: - Add gestures
 
         .highPriorityGesture( /// Add the drag gesture.
@@ -449,6 +465,7 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
                 .updatingVelocity($velocity),
             including: options.swipeEnabled ? .all : .subviews /// Enable/disable swiping here.
         )
+        
         .onChange(of: currentlyDragging) { currentlyDragging in /// Detect gesture cancellations.
             if !currentlyDragging, let latestDragGestureValueBackup {
                 /// Gesture cancelled.
