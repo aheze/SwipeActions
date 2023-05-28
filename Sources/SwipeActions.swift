@@ -176,6 +176,9 @@ public struct SwipeOptions {
 
     /// Values for controlling the trigger animation.
     var offsetTriggerAnimationStiffness = Double(160), offsetTriggerAnimationDamping = Double(70)
+    
+    /// If true, the leading and trailing actions will close when the swipe view label is tapped.
+    var closeOnLabelTap = false
 }
 
 // MARK: - Environment
@@ -408,6 +411,16 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
         HStack {
             label()
                 .offset(x: offset) /// Apply the offset here.
+                .if(options.closeOnLabelTap && (trailingState == .expanded || leadingState == .expanded)) { view in
+                    view.onTapGesture {
+                        if trailingState == .expanded {
+                            trailingState = .closed
+                        } else {
+                            leadingState = .closed
+                        }
+                        close(velocity: 0)
+                    }
+                }
         }
         .readSize { size = $0 } /// Read the size of the parent label.
         .background( /// Leading swipe actions.
@@ -1256,6 +1269,13 @@ public extension SwipeView {
         view.options.offsetTriggerAnimationDamping = damping
         return view
     }
+    
+    /// If true, the leading and trailing actions will close when the swipe view label is tapped.
+    func closeOnLabelTap(_ value: Bool) -> SwipeView {
+        var view = self
+        view.options.closeOnLabelTap = value
+        return view
+    }
 }
 
 /// Modifier for a clipped delete transition effect.
@@ -1423,4 +1443,22 @@ struct ContentSizeReaderPreferenceKey: PreferenceKey {
 struct AllowSwipeToTriggerKey: PreferenceKey {
     static var defaultValue: Bool? = nil
     static func reduce(value: inout Bool?, nextValue: () -> Bool?) { value = nextValue() }
+}
+
+// MARK: Extensions
+
+
+extension View {
+    /// Applies the given transform if the given condition evaluates to `true`.
+    /// - Parameters:
+    ///   - condition: The condition to evaluate.
+    ///   - transform: The transform to apply to the source `View`.
+    /// - Returns: Either the original `View` or the modified `View` if the condition is `true`.
+    @ViewBuilder func `if`<Content: View>(_ condition: Bool, transform: (Self) -> Content) -> some View {
+        if condition {
+            transform(self)
+        } else {
+            self
+        }
+    }
 }
