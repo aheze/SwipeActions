@@ -31,6 +31,15 @@ struct ContentView: View {
 
     @State var expandedSectionKinds = DemoSectionKind.allCases
     @State var showingDebug = false
+    
+    /// Calculatable `ToolbarItemPlacement` modifier for iOS and macOS platforms 
+    private var toolbarGroupPlacement: ToolbarItemPlacement {
+        #if os(iOS)
+        return .navigationBarTrailing
+        #else
+        return .automatic
+        #endif
+    }
 
     var body: some View {
         VStack {
@@ -139,7 +148,7 @@ struct ContentView: View {
                                     .font(.system(.body, design: .monospaced).weight(.semibold))
                             }
                             .multilineTextAlignment(.center)
-                            .accent(.primary)
+                            .accentColor(.primary)
                             .padding(.top, 20)
                             .transition(.scale(scale: 0.8).combined(with: .opacity))
                         }
@@ -163,7 +172,7 @@ struct ContentView: View {
             .padding(.bottom, 32)
         }
         .toolbar {
-            ToolbarItemGroup(placement: .navigationBarTrailing) {
+            ToolbarItemGroup(placement: toolbarGroupPlacement) {
                 let shouldExpandAll: Bool = {
                     if expandedSectionKinds.count == DemoSectionKind.allCases.count {
                         return false
@@ -190,7 +199,7 @@ struct ContentView: View {
                     }
                 } label: {
                     Image(systemName: shouldExpandAll ? "arrow.up.backward.and.arrow.down.forward" : "arrow.down.forward.and.arrow.up.backward")
-                        .noAnimation()
+                        .animation(nil)
                 }
             }
         }
@@ -229,11 +238,17 @@ struct DemoSection<Content: View>: View {
                         Image(systemName: "chevron.right")
                             .rotationEffect(.degrees(expanded.wrappedValue ? 90 : 0))
                     }
+#if os(iOS)
                     .foregroundColor(.primary)
+#else
+                    .foregroundColor(.black)
+#endif
                     .font(.title3.weight(.bold))
                     .padding(.horizontal, 24)
                     .padding(.vertical)
+#if os(iOS)
                     .background(VisualEffectView(.systemChromeMaterial))
+#endif
                     .cornerRadius(32)
                     .environment(\.colorScheme, .dark)
                 }
@@ -249,8 +264,10 @@ struct DemoSection<Content: View>: View {
                         .font(.title3.weight(.medium))
                         .environment(\.colorScheme, .dark)
                 } background: { highlight in
+#if os(iOS)
                     VisualEffectView(.systemChromeMaterial)
                         .environment(\.colorScheme, .dark)
+#endif
                 }
                 .allowSwipeToTrigger()
             }
@@ -265,6 +282,7 @@ struct DemoSection<Content: View>: View {
 }
 
 /// Use UIKit blurs in SwiftUI.
+#if os(iOS)
 struct VisualEffectView: UIViewRepresentable {
     /// The blur's style.
     public var style: UIBlurEffect.Style
@@ -282,13 +300,22 @@ struct VisualEffectView: UIViewRepresentable {
         uiView.effect = UIBlurEffect(style: style)
     }
 }
+#endif
 
 private struct BackgroundColorKey: EnvironmentKey {
+    #if os(iOS)
     static let defaultValue = Color(.systemBackground)
+    #else
+    static let defaultValue = Color(.windowBackgroundColor)
+    #endif
 }
 
 private struct SecondaryBackgroundColorKey: EnvironmentKey {
+    #if os(iOS)
     static let defaultValue = Color(.secondarySystemBackground)
+    #else
+    static let defaultValue = Color(.windowBackgroundColor)
+    #endif
 }
 
 extension EnvironmentValues {

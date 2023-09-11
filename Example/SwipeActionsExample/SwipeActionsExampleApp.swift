@@ -16,8 +16,10 @@ struct SwipeActionsExampleApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+#if os(iOS)
                 .environment(\.backgroundColor, Color(colorScheme == .light ? .systemBackground : .secondarySystemBackground))
                 .environment(\.secondaryBackgroundColor, Color(colorScheme == .light ? .secondarySystemBackground : .systemBackground))
+#endif
         }
     }
 }
