@@ -151,10 +151,13 @@ public struct SwipeOptions {
 
     /// Ensure that the user must drag a significant amount to trigger the edge action, even if the actions' total width is small.
     var minimumPointToTrigger = Double(200)
-
+#if os(iOS)
     /// Applies if `swipeToTriggerLeadingEdge/swipeToTriggerTrailingEdge` is true.
+    /// Available only for iOS platform
     var enableTriggerHaptics = true
-
+#else
+    var enableTriggerHaptics = false
+#endif
     /// Applies if `swipeToTriggerLeadingEdge/swipeToTriggerTrailingEdge` is false, or when there's no actions on one side.
     var stretchRubberBandingPower = Double(0.7)
 
@@ -458,7 +461,7 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
         }
 
         // MARK: - Trigger haptics
-
+#if os(iOS)
         .onChange(of: leadingState) { [leadingState] newValue in
             /// Make sure the change was from `triggering` to `nil`, or the other way around.
             let changed =
@@ -481,6 +484,7 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
                 generator.impactOccurred()
             }
         }
+#endif
 
         // MARK: - Receive `SwipeViewGroup` events
 
@@ -1198,12 +1202,15 @@ public extension SwipeView {
         return view
     }
 
+#if os(iOS)
     /// Applies if `swipeToTriggerLeadingEdge/swipeToTriggerTrailingEdge` is true.
+    /// Available only for iOS platform
     func swipeEnableTriggerHaptics(_ value: Bool) -> SwipeView {
         var view = self
         view.options.enableTriggerHaptics = value
         return view
     }
+#endif
 
     /// Applies if `swipeToTriggerLeadingEdge/swipeToTriggerTrailingEdge` is false, or when there's no actions on one side.
     func swipeStretchRubberBandingPower(_ value: Double) -> SwipeView {
