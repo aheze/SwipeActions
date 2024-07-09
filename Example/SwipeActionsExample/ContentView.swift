@@ -139,7 +139,7 @@ struct ContentView: View {
                                     .font(.system(.body, design: .monospaced).weight(.semibold))
                             }
                             .multilineTextAlignment(.center)
-                            .accent(.primary)
+                            .accentColor(.primary)
                             .padding(.top, 20)
                             .transition(.scale(scale: 0.8).combined(with: .opacity))
                         }
@@ -190,7 +190,7 @@ struct ContentView: View {
                     }
                 } label: {
                     Image(systemName: shouldExpandAll ? "arrow.up.backward.and.arrow.down.forward" : "arrow.down.forward.and.arrow.up.backward")
-                        .noAnimation()
+                        .animation(nil)
                 }
             }
         }
