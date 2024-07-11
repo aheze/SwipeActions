@@ -14,14 +14,18 @@ extension ContentView {
         if showingCustomizationClear {
             SwipeView {
                 Container(title: "Notification", details: "Swipe for options") {
+#if os(iOS)
                     VisualEffectView(.systemThinMaterial)
+#endif
                 }
             } trailingActions: { _ in
                 SwipeAction {} label: { highlight in
                     Text("Options")
                 } background: { highlight in
+#if os(iOS)
                     VisualEffectView(.systemThinMaterial)
                         .brightness(highlight ? -0.1 : 0)
+#endif
                 }
 
                 SwipeAction {
@@ -38,8 +42,10 @@ extension ContentView {
                 } label: { highlight in
                     Text("Clear")
                 } background: { highlight in
+#if os(iOS)
                     VisualEffectView(.systemThinMaterial)
                         .brightness(highlight ? -0.1 : 0)
+#endif
                 }
                 .allowSwipeToTrigger()
             }
@@ -54,7 +60,9 @@ extension ContentView {
                 #"    backgroundColor: .blue"#,
                 #") {}"#
             ) {
+#if os(iOS)
                 VisualEffectView(.systemThickMaterial)
+#endif
             }
         } trailingActions: { _ in
             SwipeAction(
@@ -75,7 +83,9 @@ extension ContentView {
                 #") {}"#,
                 #"    .swipeActionChangeLabelVisibilityOnly(true)"#
             ) {
+#if os(iOS)
                 VisualEffectView(.systemChromeMaterial)
+#endif
             }
         } trailingActions: { _ in
             SwipeAction(
