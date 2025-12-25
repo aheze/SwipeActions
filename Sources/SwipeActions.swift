@@ -140,6 +140,8 @@ public struct SwipeOptions {
     /// The width for each action.
     var actionWidth = Double(100)
 
+    var actionMaxHeight: Double = .infinity
+
     /// Spacing between actions and the label view.
     var spacing = Double(8)
 
@@ -676,7 +678,7 @@ struct SwipeActionsLayout: _VariadicView_UnaryViewRoot {
 
                     Color.clear.overlay(
                         child
-                            .frame(maxHeight: .infinity)
+                            .frame(maxHeight: options.actionMaxHeight)
                             .frame(width: width)
                             .opacity(shown ? 1 : 0)
                             .mask(
@@ -687,7 +689,7 @@ struct SwipeActionsLayout: _VariadicView_UnaryViewRoot {
                     .zIndex(Double(zIndex))
                 } else {
                     child
-                        .frame(maxHeight: .infinity)
+                        .frame(maxHeight: options.actionMaxHeight)
                         .frame(width: width)
                         .opacity(shown ? 1 : 0)
                         .mask(
@@ -1179,6 +1181,12 @@ public extension SwipeView {
     func swipeActionWidth(_ value: Double) -> SwipeView {
         var view = self
         view.options.actionWidth = value
+        return view
+    }
+
+    func swipeActionMaxWidth(_ value: Double) -> SwipeView {
+        var view = self
+        view.options.actionMaxHeight = value
         return view
     }
 
