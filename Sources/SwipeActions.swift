@@ -1097,7 +1097,7 @@ public extension SwipeAction {
                  .allowSwipeToTrigger()
          }
      */
-    func allowSwipeToTrigger(_ value: Bool = true) -> some View {
+    func allowSwipeToTrigger(_ value: Bool = true) -> SwipeAction {
         var view = self
         view.allowSwipeToTrigger = value
         return view
