@@ -176,6 +176,9 @@ public struct SwipeOptions {
 
     /// Values for controlling the trigger animation.
     var offsetTriggerAnimationStiffness = Double(160), offsetTriggerAnimationDamping = Double(70)
+    
+    /// The priority for the swipe view drag gesture
+    var swipeViewDragGesturePriority: GesturePriority = .high
 }
 
 // MARK: - Environment
@@ -440,7 +443,7 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
 
         // MARK: - Add gestures
 
-        .highPriorityGesture( /// Add the drag gesture.
+        .gesture( /// Add the drag gesture.
             DragGesture(minimumDistance: options.swipeMinimumDistance)
                 .updating($currentlyDragging) { value, state, transaction in
                     state = true
@@ -448,7 +451,8 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
                 .onChanged(onChanged)
                 .onEnded(onEnded)
                 .updatingVelocity($velocity),
-            including: options.swipeEnabled ? .all : .subviews /// Enable/disable swiping here.
+            including: options.swipeEnabled ? .all : .subviews,    /// Enable/disable swiping here.
+            priority: options.swipeViewDragGesturePriority
         )
         .onChange(of: currentlyDragging) { currentlyDragging in /// Detect gesture cancellations.
             if !currentlyDragging, let latestDragGestureValueBackup {
@@ -1268,6 +1272,13 @@ public extension SwipeView {
         view.options.offsetTriggerAnimationDamping = damping
         return view
     }
+    
+    /// The priority of the swipe view's drag gesture
+    func swipeDragGesturePriority(_ value: GesturePriority) -> SwipeView {
+        var view = self
+        view.options.swipeViewDragGesturePriority = value
+        return view
+    }
 }
 
 /// Modifier for a clipped delete transition effect.
@@ -1435,4 +1446,35 @@ struct ContentSizeReaderPreferenceKey: PreferenceKey {
 struct AllowSwipeToTriggerKey: PreferenceKey {
     static var defaultValue: Bool? = nil
     static func reduce(value: inout Bool?, nextValue: () -> Bool?) { value = nextValue() }
+}
+
+
+// MARK: Configurable gesture priority
+
+/// The relative priority of a SwiftUI gesture
+public enum GesturePriority {
+    case high
+    case normal
+}
+
+/// A view modifier that allows a gesture to have a configurable priority
+fileprivate struct ConfigurableGesturePriority: ViewModifier {
+    let gesture: any Gesture
+    let mask: GestureMask
+    let priority: GesturePriority
+    
+    func body(content: Content) -> some View {
+        switch priority {
+            case .high:
+                AnyView(content.highPriorityGesture(gesture, including: mask))
+            case .normal:
+                AnyView(content.gesture(gesture, including: mask))
+        }
+    }
+}
+
+extension View {
+    func gesture(_ gesture: some Gesture, including mask: GestureMask, priority: GesturePriority) -> some View {
+        modifier(ConfigurableGesturePriority(gesture: gesture, mask: mask, priority: priority))
+    }
 }
