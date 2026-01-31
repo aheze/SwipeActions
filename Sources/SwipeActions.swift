@@ -120,7 +120,7 @@ public struct SwipeOptions {
     var swipeEnabled = true
 
     /// The minimum distance needed to drag to start the gesture. Should be more than 0 for best compatibility with other gestures/buttons.
-    var swipeMinimumDistance = Double(2)
+    var swipeMinimumDistance = Double(20)
 
     /// The style to use (`mask`, `equalWidths`, or `cascade`).
     var actionsStyle = SwipeActionStyle.mask
@@ -404,8 +404,16 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
         self.leadingActions = leadingActions
         self.trailingActions = trailingActions
     }
-
+    
     public var body: some View {
+        let dragGesture = DragGesture(minimumDistance: options.swipeMinimumDistance)
+                                .updating($currentlyDragging) { value, state, transaction in
+                                    state = true
+                                }
+                                .onChanged(onChanged)
+                                .onEnded(onEnded)
+                                .updatingVelocity($velocity)
+        
         HStack {
             label()
                 .offset(x: offset) /// Apply the offset here.
@@ -439,17 +447,7 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
         )
 
         // MARK: - Add gestures
-
-        .highPriorityGesture( /// Add the drag gesture.
-            DragGesture(minimumDistance: options.swipeMinimumDistance)
-                .updating($currentlyDragging) { value, state, transaction in
-                    state = true
-                }
-                .onChanged(onChanged)
-                .onEnded(onEnded)
-                .updatingVelocity($velocity),
-            including: options.swipeEnabled ? .all : .subviews /// Enable/disable swiping here.
-        )
+        .highPriorityGesture(dragGesture, including: options.swipeEnabled ? .all : .subviews)
         .onChange(of: currentlyDragging) { currentlyDragging in /// Detect gesture cancellations.
             if !currentlyDragging, let latestDragGestureValueBackup {
                 /// Gesture cancelled.
@@ -502,17 +500,23 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
         }
         .onChange(of: swipeViewGroupSelection.wrappedValue) { newValue in
             if swipeViewGroupSelection.wrappedValue != id {
-                currentSide = nil
-
-                if leadingState != .closed {
-                    leadingState = .closed
-                    close(velocity: 0)
-                }
-
-                if trailingState != .closed {
-                    trailingState = .closed
-                    close(velocity: 0)
-                }
+                reset()
+            }
+        }
+    }
+    
+    func reset() {
+        withAnimation {
+            currentSide = nil
+            
+            if leadingState != .closed {
+                leadingState = .closed
+                close(velocity: 0)
+            }
+            
+            if trailingState != .closed {
+                trailingState = .closed
+                close(velocity: 0)
             }
         }
     }
@@ -1294,6 +1298,7 @@ public extension AnyTransition {
             active: SwipeDeleteModifier(visibility: 0),
             identity: SwipeDeleteModifier(visibility: 1)
         )
+        .combined(with: .move(edge: .leading))
     }
 }
 
@@ -1397,7 +1402,9 @@ struct GestureVelocity: DynamicProperty {
 extension Gesture where Value == DragGesture.Value {
     func updatingVelocity(_ velocity: GestureVelocity) -> _EndedGesture<_ChangedGesture<Self>> {
         onChanged { value in
-            velocity.update(value)
+            withAnimation {
+                velocity.update(value)
+            }
         }
         .onEnded { _ in
             velocity.reset()
