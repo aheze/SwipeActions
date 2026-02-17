@@ -537,8 +537,12 @@ extension SwipeView {
         }()
 
         let opacity: Double = {
+						
+						/// Adjust the dragged length by subtracting the spacing
+						let adjustedDragged = draggedLength - options.spacing
+					
             /// Subtract the start point from the dragged length, which cancels it out initially.
-            let offset = max(0, draggedLength - options.actionsVisibleStartPoint)
+            let offset = max(0, adjustedDragged - options.actionsVisibleStartPoint)
 
             /// Calculate the opacity percent.
             let percent = offset / (options.actionsVisibleEndPoint - options.actionsVisibleStartPoint)
